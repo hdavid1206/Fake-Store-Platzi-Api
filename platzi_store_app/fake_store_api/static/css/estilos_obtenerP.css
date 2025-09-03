@@ -1,0 +1,251 @@
+/* Estilos específicos para obtener productos */
+
+/* Título principal */
+main h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(45deg, #f59e0b, #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+/* Información de resultados */
+main > p {
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #a0a0a0;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.8rem;
+    border-radius: 6px;
+    border-left: 3px solid #f59e0b;
+}
+
+/* Contenedor de tarjetas */
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding: 0.5rem 0;
+}
+
+/* Tarjetas de productos */
+.card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #f59e0b, #f97316, #ef4444);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+/* Imagen de la tarjeta */
+.card-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.card:hover .card-img {
+    transform: scale(1.03);
+}
+
+/* Contenido de la tarjeta */
+.card-content {
+    padding: 1rem;
+}
+
+.card-content h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+    color: #e0e0e0;
+    font-weight: 600;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-content p {
+    color: #f59e0b;
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.card-content p::before {
+    content: '$';
+    background: linear-gradient(45deg, #f59e0b, #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 900;
+}
+
+/* Mensaje cuando no hay productos */
+main > p:last-child {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    backdrop-filter: blur(8px);
+}
+
+/* Efectos de carga */
+.loading {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(245, 158, 11, 0.3);
+    border-radius: 50%;
+    border-top-color: #f59e0b;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .card-container {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 0.8rem;
+        padding: 0.4rem;
+    }
+    
+    main h1 {
+        font-size: 1.8rem;
+    }
+    
+    .card-content {
+        padding: 0.8rem;
+    }
+    
+    .card-content h3 {
+        font-size: 1rem;
+    }
+    
+    .card-img {
+        height: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-container {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 0.6rem;
+    }
+    
+    main h1 {
+        font-size: 1.6rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    main > p {
+        font-size: 0.9rem;
+        padding: 0.6rem;
+    }
+}
+
+/* Animación escalonada para las tarjetas */
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
+.card:nth-child(5) { animation-delay: 0.5s; }
+.card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Estados de error específicos */
+.card-error {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.card-error .card-img {
+    filter: grayscale(100%);
+    opacity: 0.7;
+}
+
+/* Badge de ID del producto */
+.card-content h3 {
+    position: relative;
+}
+
+.card-content h3::before {
+    content: '#';
+    color: #f59e0b;
+    font-weight: 900;
+    margin-right: 0.2rem;
+    opacity: 0.7;
+}
+
+/* Efecto hover mejorado */
+.card:hover .card-content h3 {
+    color: #f59e0b;
+    transition: color 0.3s ease;
+}
+
+/* Skeleton loading para cuando se están cargando las imágenes */
+.card-img[src=""], .card-img:not([src]) {
+    background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+    background-size: 200% 100%;
+    animation: skeleton 1.5s infinite;
+}
+
+@keyframes skeleton {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}

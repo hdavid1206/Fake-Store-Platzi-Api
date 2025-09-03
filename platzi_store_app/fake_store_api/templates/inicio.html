@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %} Inicio - Tienda Avila's {% endblock%}
+
+{% block content %}
+    <div class="text-center">
+        <h1>Bienvenido a la Aplicación de Store Avila's</h1>
+        <img src="https://www.yunbitsoftware.com/blog/wp-content/uploads/2018/06/145416-OTSAQG-631-1.jpg" alt="Store Avila's" />
+        <p>Esta aplicación te permite explorar muchos productos variados.</p>
+    </div>        
+    
+    <section id="c_productos">
+        <h2>Consultar Productos</h2>
+        <p>Explora nuestro catálogo de productos disponibles</p>
+        <br></br>
+        <a href="{% url 'fake_store_api:obtener_productos' %}" class="btn btn-primary">
+            Consultar Productos
+        </a>
+    </section>
+    
+    <section id="a_productos">
+        <h2>Agregar Productos</h2>
+        <p>Añade nuevos productos a nuestro catálogo</p>
+        <br></br>
+        <a href="{% url 'fake_store_api:agregar_producto' %}" class="btn btn-info">
+            Agregar Productos
+        </a>
+    </section>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %} TIENDA AVILA'S {% endblock %}
+
+{% block content %}
+    <h1>Resultados de la Consulta</h1>
+
+    {% if success %}
+        <p>{{ mensaje }} (Mostrados: {{ total_mostrados }})</p>
+        <p>Consulta realizada: {{ consulta }}</p>
+
+        <div class="card-container">
+            {% for producto in productos %}
+                <div class="card">
+                    <img src="{{ producto.images.0 }}" alt="{{ producto.title }}" class="card-img">
+                    <div class="card-content">
+                        <h3>{{ producto.id }} - {{ producto.title }}</h3>
+                        <p>Precio: ${{ producto.price }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No se encontraron productos.</p>
+    {% endif %}
+{% endblock %}
+

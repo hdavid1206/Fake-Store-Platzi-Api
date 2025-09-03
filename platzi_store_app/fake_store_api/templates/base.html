@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %} Inicio {% endblock %}</title>
+        {% load static %}
+        <script src="{% static 'js/acciones.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'css/estilos_bases.css' %}">
+        <link rel="stylesheet" href="{% static 'css/estilos_estilos_agregarP.css' %}">
+        <link rel="stylesheet" href="{% static 'css/estilos_estilos_obtenerP.css' %}">
+    </head>
+    <body>
+        <header>
+            <nav class="navbar">
+                <div class="container-fluid">                
+                    <a  href="{% url 'fake_store_api:inicio' %}">Store Avila's</a>                    
+                        <a  href="{% url 'fake_store_api:obtener_productos' %}">Productos</a>
+                            <a  href="{% url 'fake_store_api:agregar_producto' %}">Agregar productos</a>
+                                <a href="{% url 'ayuda:ayuda'%}">Ayuda</a>
+                    </div>
+            </nav>
+        </header>
+    <main class="container mt-4">
+        {% block content %}
+        {% endblock %}
+    </main>
+    <footer class="nn">
+        <p>&copy; 2025 Store Avila's. Todos los derechos reservados.</p>
+            <p>Desarrollado por <a href="" target="_blank">Camilo Avila</a></p>
+    </footer>
+    
+</body>
+</html>
