@@ -3,53 +3,55 @@
 /* Título principal */
 main h1 {
     text-align: center;
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    margin: 1.2rem 0;
     background: linear-gradient(45deg, #f59e0b, #f97316);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    text-shadow: 0 2px 6px rgba(245, 158, 11, 0.2);
+    font-weight: 700;
 }
 
 /* Información de resultados */
 main > p {
     text-align: center;
-    font-size: 1rem;
-    margin-bottom: 0.8rem;
+    font-size: 0.9rem;
+    margin: 0.5rem auto 1rem;
     color: #a0a0a0;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 0.8rem;
-    border-radius: 6px;
-    border-left: 3px solid #f59e0b;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    border-left: 2px solid #f59e0b;
+    max-width: 600px;
 }
 
 /* Contenedor de tarjetas */
 .card-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-    padding: 0.5rem 0;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.8rem;
+    margin: 1rem 0;
+    padding: 0.5rem;
 }
 
 /* Tarjetas de productos */
 .card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
     overflow: hidden;
     transition: all 0.3s ease;
     position: relative;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
-    animation: fadeInUp 0.5s ease-out;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    animation: fadeInUp 0.4s ease-out;
 }
 
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(15px);
     }
     to {
         opacity: 1;
@@ -58,9 +60,9 @@ main > p {
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
-    border-color: rgba(245, 158, 11, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    border-color: rgba(245, 158, 11, 0.4);
 }
 
 .card::before {
@@ -69,8 +71,8 @@ main > p {
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #f59e0b, #f97316, #ef4444);
+    height: 1px;
+    background: linear-gradient(90deg, #f59e0b, #f97316);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -82,26 +84,26 @@ main > p {
 /* Imagen de la tarjeta */
 .card-img {
     width: 100%;
-    height: 150px;
+    height: 100px;
     object-fit: cover;
     transition: transform 0.3s ease;
 }
 
 .card:hover .card-img {
-    transform: scale(1.03);
+    transform: scale(1.05);
 }
 
 /* Contenido de la tarjeta */
 .card-content {
-    padding: 1rem;
+    padding: 0.8rem;
 }
 
 .card-content h3 {
-    font-size: 1.1rem;
-    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
     color: #e0e0e0;
     font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -111,12 +113,12 @@ main > p {
 
 .card-content p {
     color: #f59e0b;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 700;
     margin: 0;
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.3rem;
 }
 
 .card-content p::before {
@@ -125,31 +127,32 @@ main > p {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    font-weight: 900;
+    font-weight: 800;
 }
 
 /* Mensaje cuando no hay productos */
 main > p:last-child {
     text-align: center;
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: #ef4444;
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin-top: 1.5rem;
-    backdrop-filter: blur(8px);
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem auto;
+    max-width: 500px;
+    backdrop-filter: blur(6px);
 }
 
 /* Efectos de carga */
 .loading {
     display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(245, 158, 11, 0.3);
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(245, 158, 11, 0.4);
     border-radius: 50%;
     border-top-color: #f59e0b;
-    animation: spin 1s ease-in-out infinite;
+    animation: spin 0.8s ease-in-out infinite;
 }
 
 @keyframes spin {
@@ -161,75 +164,80 @@ main > p:last-child {
 /* Responsive */
 @media (max-width: 768px) {
     .card-container {
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 0.8rem;
-        padding: 0.4rem;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 0.6rem;
+        padding: 0.3rem;
     }
-    
+
     main h1 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+        margin-bottom: 1rem;
     }
-    
+
     .card-content {
-        padding: 0.8rem;
+        padding: 0.6rem;
     }
-    
+
     .card-content h3 {
-        font-size: 1rem;
+        font-size: 0.85rem;
     }
-    
+
     .card-img {
-        height: 120px;
+        height: 90px;
+    }
+
+    main > p {
+        font-size: 0.85rem;
+        padding: 0.5rem;
     }
 }
 
 @media (max-width: 480px) {
     .card-container {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 0.6rem;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.5rem;
     }
-    
+
     main h1 {
-        font-size: 1.6rem;
-        margin-bottom: 0.8rem;
+        font-size: 1.4rem;
+        margin-bottom: 0.7rem;
     }
-    
-    main > p {
-        font-size: 0.9rem;
-        padding: 0.6rem;
+
+    .card-content h3 {
+        font-size: 0.8rem;
+    }
+
+    .card-img {
+        height: 80px;
     }
 }
 
 /* Animación escalonada para las tarjetas */
-.card:nth-child(1) { animation-delay: 0.1s; }
-.card:nth-child(2) { animation-delay: 0.2s; }
-.card:nth-child(3) { animation-delay: 0.3s; }
-.card:nth-child(4) { animation-delay: 0.4s; }
-.card:nth-child(5) { animation-delay: 0.5s; }
-.card:nth-child(6) { animation-delay: 0.6s; }
+.card:nth-child(1) { animation-delay: 0.05s; }
+.card:nth-child(2) { animation-delay: 0.1s; }
+.card:nth-child(3) { animation-delay: 0.15s; }
+.card:nth-child(4) { animation-delay: 0.2s; }
+.card:nth-child(5) { animation-delay: 0.25s; }
+.card:nth-child(6) { animation-delay: 0.3s; }
 
 /* Estados de error específicos */
 .card-error {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
 }
 
 .card-error .card-img {
     filter: grayscale(100%);
-    opacity: 0.7;
+    opacity: 0.6;
 }
 
 /* Badge de ID del producto */
-.card-content h3 {
-    position: relative;
-}
-
 .card-content h3::before {
     content: '#';
     color: #f59e0b;
-    font-weight: 900;
-    margin-right: 0.2rem;
-    opacity: 0.7;
+    font-weight: 800;
+    margin-right: 0.15rem;
+    opacity: 0.8;
 }
 
 /* Efecto hover mejorado */
@@ -242,7 +250,7 @@ main > p:last-child {
 .card-img[src=""], .card-img:not([src]) {
     background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
     background-size: 200% 100%;
-    animation: skeleton 1.5s infinite;
+    animation: skeleton 1.2s infinite;
 }
 
 @keyframes skeleton {
