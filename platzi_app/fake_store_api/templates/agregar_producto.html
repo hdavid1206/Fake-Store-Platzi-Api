@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'estilos_agregarP.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilos_agregarP.css' %}">
 {% endblock %}
 {% block extra_scripts %}
     <script src="{% static 'acciones.js' %}"></script>
@@ -8,9 +8,9 @@
 {% block title %}TIENDA AVILA'S - Agregar Producto{% endblock %}
 
 {% block content %}
-    <div class="form-container">
+    <div class="form-container mx-auto">
         <h1>Agregar Nuevo Producto</h1>
-        <div class="progress-container">
+        <div class="progress-container text-center">
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
@@ -28,15 +28,15 @@
         {% endif %}
         {% if show_success_modal %}
             <div class="modal-overlay" id="successModal">
-                <div class="modal-content">
+                <div class="modal-content mx-auto">
                     <div class="modal-header">
                         <h2><i class="bi bi-check-circle-fill"></i> ¡Producto Agregado!</h2>
                         <button class="modal-close" onclick="closeModal()">×</button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body text-center">
                         <p>{{ mensaje }}</p>
                         {% if producto %}
-                            <div class="product-preview">
+                            <div class="product-preview d-flex justify-content-center">
                                 <div class="product-info">
                                     <h3>{{ producto.title }}</h3>
                                     <p class="price">${{ producto.price }}</p>
@@ -50,7 +50,7 @@
                                 {% endif %}
                             </div>
                         {% endif %}
-                        <div class="modal-actions">
+                        <div class="modal-actions d-flex justify-content-center">
                             <button class="btn btn-primary" onclick="location.reload()">Agregar Otro</button>
                             <a href="{% url 'fake_store_api:obtener_productos' %}" class="btn btn-secondary">Ver Productos</a>
                         </div>
@@ -135,7 +135,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-actions">
+            <div class="form-actions d-flex justify-content-center">
                 <button type="submit" id="submitBtn" class="btn btn-primary">
                     <span class="btn-text">Agregar Producto</span>
                     <span class="btn-loading" style="display: none;">Procesando...</span>

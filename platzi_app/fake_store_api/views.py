@@ -67,19 +67,10 @@ def obtener_productos(request):
         except json.JSONDecodeError:
             contexto = {
                 'success': False,
-                'mensaje': 'Error al procesar la respuesta del servidor.'
+                'mensaje': 'Error al procesar la respuesta JSON'
             }
             return render(request, 'obtener_producto.html', contexto)
-            
-        except Exception as e:
-            contexto = {
-                'success': False,
-                'mensaje': f'Error inesperado: {str(e)}'
-            }
-            return render(request, 'obtener_producto.html', contexto)
-    
-    return redirect('fake_store_api:inicio')
-    
+
 def agregar_producto(request):
     form = AgregarProductoForm()
     return render(request, 'agregar_producto.html', {'form': form})
@@ -87,29 +78,24 @@ def agregar_producto(request):
 def agregar_producto_api(request):
     if request.method == 'POST':
         form = AgregarProductoForm(request.POST)
-        
         if form.is_valid():
+            titulo = form.cleaned_data['titulo']
+            precio = form.cleaned_data['precio']
+            descripcion = form.cleaned_data['descripcion']
+            categoria = form.cleaned_data['categoria']
+            images = form.get_images_list()
+            
+            datos = {
+                "title": titulo,
+                "price": precio,
+                "description": descripcion,
+                "categoryId": categoria,
+                "images": images
+            }
+            
+            url = "https://api.escuelajs.co/api/v1"
+            
             try:
-                # Extraer datos del formulario
-                titulo = form.cleaned_data['titulo']
-                precio = float(form.cleaned_data['precio'])
-                descripcion = form.cleaned_data['descripcion']
-                categoria_id = int(form.cleaned_data['categoria'])
-                
-                # Obtener lista de imágenes
-                imagenes = form.get_images_list()
-
-                # Preparar datos para la API
-                url = "https://api.escuelajs.co/api/v1"
-                datos = {
-                    "title": titulo,
-                    "price": precio,
-                    "description": descripcion,
-                    "categoryId": categoria_id,
-                    "images": imagenes
-                }
-                
-                # Hacer petición POST
                 response = requests.post(f"{url}/products", json=datos, timeout=20)
                 
                 if response.status_code == 201:

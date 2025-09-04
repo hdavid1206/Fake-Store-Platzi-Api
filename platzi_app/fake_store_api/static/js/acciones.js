@@ -250,4 +250,4 @@ setTimeout(function() {
         alert.style.opacity = '0';
         setTimeout(() => alert.remove(), 500);
     });
-}, 5000);
+}, 5000); 

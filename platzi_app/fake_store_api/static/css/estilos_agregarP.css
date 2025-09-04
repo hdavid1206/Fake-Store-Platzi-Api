@@ -9,7 +9,7 @@
 
 /* Título principal */
 .form-container h1 {
-    text-align: center;
+    text-align: center !important;
     font-size: 2.5rem;
     font-weight: 800;
     margin: 2rem 0;
@@ -35,7 +35,7 @@
 /* Barra de progreso */
 .progress-container {
     margin-bottom: 2rem;
-    text-align: center;
+    text-align: center !important;
 }
 
 .progress-bar {
@@ -129,6 +129,7 @@ form {
     margin-bottom: 1.5rem;
     border-bottom: 2px solid var(--orange-lighter);
     padding-bottom: 0.5rem;
+    text-align: center !important;
 }
 
 .form-group {
@@ -140,6 +141,7 @@ label {
     font-weight: 600;
     margin-bottom: 0.5rem;
     color: var(--gray-dark);
+    text-align: center !important;
 }
 
 input, select, textarea {
@@ -176,6 +178,7 @@ textarea {
     font-size: 0.85rem;
     margin-top: 0.25rem;
     display: none;
+    text-align: center !important;
 }
 
 .error {
@@ -186,6 +189,7 @@ textarea {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    justify-content: center;
 }
 
 .input-addon {
@@ -219,6 +223,7 @@ textarea {
     border-radius: var(--border-radius);
     padding: 1rem;
     display: none;
+    text-align: center !important;
 }
 
 .preview-container img {
@@ -229,7 +234,7 @@ textarea {
 .form-actions {
     display: flex;
     gap: 1rem;
-    justify-content: flex-end;
+    justify-content: center !important;
     margin-top: 2rem;
 }
 
@@ -288,7 +293,7 @@ textarea {
 
 .modal-header {
     padding: 2rem 2rem 1rem;
-    text-align: center;
+    text-align: center !important;
     position: relative;
     border-bottom: 2px solid var(--orange-lighter);
 }
@@ -329,12 +334,12 @@ textarea {
 
 .modal-body {
     padding: 2rem;
+    text-align: center !important;
 }
 
 .modal-body p {
     font-size: 1.1rem;
     color: var(--gray-medium);
-    text-align: center;
     margin-bottom: 2rem;
 }
 
@@ -348,10 +353,12 @@ textarea {
     background: var(--orange-lighter);
     border-radius: var(--border-radius);
     border: 2px solid rgba(255, 107, 53, 0.2);
+    justify-content: center;
 }
 
 .product-info {
     flex: 1;
+    text-align: center !important;
 }
 
 .product-info h3 {
@@ -417,6 +424,10 @@ textarea {
     
     .modal-content {
         width: 95%;
+    }
+    
+    label {
+        text-align: center !important;
     }
 }
 

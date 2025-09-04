@@ -76,10 +76,6 @@ header {
     background-clip: text;
 }
 
-.navbar a:not(:first-child) {
-    border: 2px solid transparent;
-}
-
 .navbar a:not(:first-child):hover {
     background: var(--orange-primary);
     color: var(--white);
@@ -100,7 +96,7 @@ header {
 
 /* Página de inicio */
 .text-center {
-    text-align: center;
+    text-align: center !important;
 }
 
 .text-center h1 {
@@ -123,10 +119,15 @@ section {
     background: var(--white);
     border-radius: var(--border-radius);
     padding: 3rem;
-    margin: 2rem 0;
+    margin: 2rem auto;
     box-shadow: var(--shadow-medium);
-    text-align: center;
+    text-align: center !important;
     transition: var(--transition);
+    max-width: 800px; /* Limit width for centering on larger screens */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content vertically if needed */
+    justify-content: center;
 }
 
 section:hover {
@@ -164,6 +165,7 @@ section p {
     transition: var(--transition);
     text-decoration: none;
     display: inline-block;
+    max-width: 300px; /* Limit button width on mobile for centering */
 }
 
 .btn:hover {
@@ -194,6 +196,7 @@ footer.nn {
 .footer-section {
     flex: 1;
     min-width: 200px;
+    text-align: center; /* Center footer sections on mobile */
 }
 
 .footer-section h3 {
@@ -237,7 +240,7 @@ footer.nn a:hover {
 @media (max-width: 768px) {
     .container-fluid {
         flex-direction: column;
-        text-align: center;
+        text-align: center !important;
         gap: 1rem;
     }
     
@@ -251,16 +254,23 @@ footer.nn a:hover {
     
     section {
         padding: 2rem;
-        margin: 1.5rem 0;
+        margin: 1.5rem auto;
+        max-width: 90%; /* Better centering on mobile */
     }
     
     section h2 {
         font-size: 1.6rem;
     }
     
-    button, .btn {
+    .btn {
         padding: 0.875rem 2rem;
         font-size: 1rem;
+        max-width: 100%; /* Full width on mobile for better touch */
+    }
+
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
     }
 }
 
@@ -275,9 +285,10 @@ footer.nn a:hover {
     
     section {
         padding: 1.5rem;
+        max-width: 100%;
     }
     
-    button, .btn {
+    .btn {
         padding: 0.75rem 1.5rem;
         font-size: 0.95rem;
     }
