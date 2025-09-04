@@ -1,32 +1,84 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %} Inicio {% endblock %}</title>
-        {% load static %}
-        <script src="{% static 'js/acciones.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'css/estilos_bases.css' %}">
-        <link rel="stylesheet" href="{% static 'css/estilos_estilos_agregarP.css' %}">
-        <link rel="stylesheet" href="{% static 'css/estilos_estilos_obtenerP.css' %}">
-    </head>
-    <body>
-        <header>
-            <nav class="navbar">
-                <div class="container-fluid">                
-                    <a  href="{% url 'fake_store_api:inicio' %}">Harold Tienda</a>                    
-                        <a  href="{% url 'fake_store_api:obtener_productos' %}">Productos</a>
-                            <a  href="{% url 'fake_store_api:agregar_producto' %}">Agregar productos</a>
-                    </div>
-            </nav>
-        </header>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tienda Harold - Inicio{% endblock %}</title>
+    {% load static %}
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{% static 'css/estilos_bases.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilos_obtenerP.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilos_agregarP.css' %}">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Meta tags para SEO -->
+    <meta name="description" content="Tienda Harold - Los mejores productos al mejor precio">
+    <meta name="keywords" content="tienda, productos, compras, ofertas">
+    <meta name="author" content="Camilo Avila">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛍️</text></svg>">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container-fluid">
+                <a href="{% url 'fake_store_api:inicio' %}" class="brand-link">
+                    🛍️ Tienda Harold
+                </a>
+                <div class="nav-links">
+                    <a href="{% url 'fake_store_api:obtener_productos' %}" class="nav-link">
+                        📦 Productos
+                    </a>
+                    <a href="{% url 'fake_store_api:agregar_producto' %}" class="nav-link">
+                        ➕ Agregar Producto
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
     <main class="container mt-4">
         {% block content %}
         {% endblock %}
     </main>
+
     <footer class="nn">
-        <p>&copy; 2025 Harold Tienda. Todos los derechos reservados.</p>
-            <p>Desarrollado por <a href="" target="_blank">Camilo Avila</a></p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>🛍️ Tienda Harold</h4>
+                <p>Tu tienda de confianza para encontrar los mejores productos.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Enlaces Rápidos</h4>
+                <ul>
+                    <li><a href="{% url 'fake_store_api:inicio' %}">Inicio</a></li>
+                    <li><a href="{% url 'fake_store_api:obtener_productos' %}">Productos</a></li>
+                    <li><a href="{% url 'fake_store_api:agregar_producto' %}">Agregar Producto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <p>📧 info@tiendaharold.com</p>
+                <p>📱 +57 300 123 4567</p>
+                <p>📍 Bogotá, Colombia</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Tienda Harold. Todos los derechos reservados.</p>
+            <p>Desarrollado con ❤️ por <a href="#" target="_blank">Camilo Avila</a></p>
+        </div>
     </footer>
+
+    <!-- JavaScript -->
+    <script src="{% static 'js/acciones.js' %}"></script>
     
+    {% block extra_scripts %}
+    {% endblock %}
 </body>
 </html>

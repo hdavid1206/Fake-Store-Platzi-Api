@@ -1,27 +1,45 @@
 {% extends 'base.html' %}
-
-{% block title %} TIENDA AVILA'S {% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'estilos_obtenerP.css' %}">
+{% endblock %}
+{% block title %}TIENDA AVILA'S - Productos{% endblock %}
 
 {% block content %}
-    <h1>Resultados de la Consulta</h1>
-
-    {% if success %}
-        <p>{{ mensaje }} (Mostrados: {{ total_mostrados }})</p>
-        <p>Consulta realizada: {{ consulta }}</p>
-
-        <div class="card-container">
-            {% for producto in productos %}
-                <div class="card">
-                    <img src="{{ producto.images.0 }}" alt="{{ producto.title }}" class="card-img">
-                    <div class="card-content">
-                        <h3>{{ producto.id }} - {{ producto.title }}</h3>
-                        <p>Precio: ${{ producto.price }}</p>
+    <main>
+        <h1>Resultados de la Consulta</h1>
+        {% if success %}
+            <p>{{ mensaje }} (Mostrados: {{ total_mostrados }})</p>
+            <p>Consulta realizada: {{ consulta }}</p>
+            <div class="products-controls">
+                <div class="products-count">Mostrando {{ total_mostrados }} productos</div>
+            </div>
+            <div class="card-container">
+                {% for producto in productos %}
+                    <div class="card">
+                        <div class="card-img-container">
+                            {% if producto.images and producto.images.0 %}
+                                <img src="{{ producto.images.0 }}" alt="{{ producto.title }}" class="card-img" onerror="this.src='https://via.placeholder.com/280x200';">
+                            {% else %}
+                                <img src="https://via.placeholder.com/280x200" alt="Placeholder" class="card-img">
+                            {% endif %}
+                        </div>
+                        <div class="card-content">
+                            <span class="card-id">#{{ producto.id }}</span>
+                            <h3>{{ producto.title }}</h3>
+                            <p class="price">${{ producto.price }}</p>
+                            <p class="description">{{ producto.description|truncatewords:20 }}</p>
+                        </div>
+                        <div class="card-action">
+                            <button class="btn">Ver Detalles</button>
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p>No se encontraron productos.</p>
-    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="error-message">
+                {{ mensaje }}
+            </div>
+        {% endif %}
+    </main>
 {% endblock %}
 

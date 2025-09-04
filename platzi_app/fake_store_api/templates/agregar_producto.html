@@ -1,39 +1,37 @@
 {% extends 'base.html' %}
-
-{% block title %} TIENDA AVILA'S - Agregar Producto {% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'estilos_agregarP.css' %}">
+{% endblock %}
+{% block extra_scripts %}
+    <script src="{% static 'acciones.js' %}"></script>
+{% endblock %}
+{% block title %}TIENDA AVILA'S - Agregar Producto{% endblock %}
 
 {% block content %}
     <div class="form-container">
-        <h1><i class="icon-plus"></i> Agregar Nuevo Producto</h1>
-        
-        <!-- Progress Bar -->
+        <h1>Agregar Nuevo Producto</h1>
         <div class="progress-container">
-            <div class="progress-bar" id="progressBar">
+            <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
-            <span class="progress-text" id="progressText">0% Completado</span>
+            <p class="progress-text" id="progressText">0% Completado</p>
         </div>
-        
-        <!-- Mostrar mensajes de Django -->
         {% if messages %}
             <div class="messages-container">
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} fade-in" role="alert">
-                        <i class="icon-{% if message.tags == 'error' %}warning{% else %}check{% endif %}"></i>
+                    <div class="alert {% if message.tags %}{{ message.tags }}{% endif %}">
                         {{ message }}
-                        <button type="button" class="close-alert" onclick="this.parentElement.remove()">×</button>
+                        <button class="close-alert" onclick="this.parentElement.remove()">×</button>
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
-        
-        <!-- Modal de éxito -->
         {% if show_success_modal %}
-            <div class="success-modal" id="successModal">
+            <div class="modal-overlay" id="successModal">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h2><i class="icon-check-circle"></i> ¡Producto Agregado!</h2>
-                        <button class="modal-close" onclick="closeModal()">&times;</button>
+                        <h2><i class="bi bi-check-circle-fill"></i> ¡Producto Agregado!</h2>
+                        <button class="modal-close" onclick="closeModal()">×</button>
                     </div>
                     <div class="modal-body">
                         <p>{{ mensaje }}</p>
@@ -43,11 +41,11 @@
                                     <h3>{{ producto.title }}</h3>
                                     <p class="price">${{ producto.price }}</p>
                                     <p class="description">{{ producto.description|truncatewords:20 }}</p>
-                                    <p class="product-id">ID: #{{ producto.id }}</p>
+                                    <span class="product-id">ID: #{{ producto.id }}</span>
                                 </div>
                                 {% if producto.images and producto.images.0 %}
                                     <div class="product-image">
-                                        <img src="{{ producto.images.0 }}" alt="{{ producto.title }}" onerror="this.style.display='none'">
+                                        <img src="{{ producto.images.0 }}" alt="{{ producto.title }}">
                                     </div>
                                 {% endif %}
                             </div>
@@ -60,117 +58,90 @@
                 </div>
             </div>
         {% endif %}
-        
-        <form id="productForm" action="{% url 'fake_store_api:agregar_producto_api' %}" method="post" novalidate>
+        <form id="productForm" method="post" action="{% url 'fake_store_api:agregar_producto_api' %}">
             {% csrf_token %}
-            
-            <!-- Título -->
-            <div class="form-group">
-                <label for="{{ form.titulo.id_for_label }}" class="required">{{ form.titulo.label }}</label>
-                {{ form.titulo }}
-                <div class="field-counter">
-                    <span id="titulo-counter">0</span>/100 caracteres
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="{{ form.titulo.id_for_label }}">{{ form.titulo.label }}</label>
+                    {{ form.titulo }}
+                    <span class="counter" id="titulo-counter">0</span>/100 caracteres
+                    <div class="error-message" id="titulo-error">
+                        {% if form.titulo.errors %}{{ form.titulo.errors.0 }}{% endif %}
+                    </div>
                 </div>
-                <div class="error-message" id="titulo-error"></div>
-                {% if form.titulo.errors %}
-                    <div class="error-message">{{ form.titulo.errors.0 }}</div>
-                {% endif %}
             </div>
-            
-            <!-- Precio y Categoría en la misma fila -->
-            <div class="form-row">
-                <div class="form-group half-width">
-                    <label for="{{ form.precio.id_for_label }}" class="required">{{ form.precio.label }}</label>
-                    <div class="input-with-icon">
-                        <span class="input-icon">$</span>
+            <div class="form-section row">
+                <div class="form-group col">
+                    <label for="{{ form.precio.id_for_label }}">{{ form.precio.label }}</label>
+                    <div class="input-group">
+                        <span class="input-addon">$</span>
                         {{ form.precio }}
                     </div>
-                    <div class="error-message" id="precio-error"></div>
-                    {% if form.precio.errors %}
-                        <div class="error-message">{{ form.precio.errors.0 }}</div>
-                    {% endif %}
-                </div>
-                
-                <div class="form-group half-width">
-                    <label for="{{ form.categoria.id_for_label }}" class="required">{{ form.categoria.label }}</label>
-                    {{ form.categoria }}
-                    <div class="error-message" id="categoria-error"></div>
-                    {% if form.categoria.errors %}
-                        <div class="error-message">{{ form.categoria.errors.0 }}</div>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <!-- Descripción -->
-            <div class="form-group">
-                <label for="{{ form.descripcion.id_for_label }}" class="required">{{ form.descripcion.label }}</label>
-                {{ form.descripcion }}
-                <div class="field-counter">
-                    <span id="descripcion-counter">0</span>/500 caracteres
-                </div>
-                <div class="error-message" id="descripcion-error"></div>
-                {% if form.descripcion.errors %}
-                    <div class="error-message">{{ form.descripcion.errors.0 }}</div>
-                {% endif %}
-            </div>
-            
-            <!-- Imágenes -->
-            <div class="images-section">
-                <h3><i class="icon-image"></i> Imágenes del Producto</h3>
-                
-                <div class="form-group">
-                    <label for="{{ form.imagen1.id_for_label }}" class="required">{{ form.imagen1.label }}</label>
-                    <div class="image-input-group">
-                        {{ form.imagen1 }}
-                        <button type="button" class="btn-preview" onclick="previewImage('imagen1')">Vista Previa</button>
+                    <div class="error-message" id="precio-error">
+                        {% if form.precio.errors %}{{ form.precio.errors.0 }}{% endif %}
                     </div>
-                    <div class="image-preview" id="preview-imagen1"></div>
-                    <div class="error-message" id="imagen1-error"></div>
-                    {% if form.imagen1.errors %}
-                        <div class="error-message">{{ form.imagen1.errors.0 }}</div>
-                    {% endif %}
                 </div>
-                
+                <div class="form-group col">
+                    <label for="{{ form.categoria.id_for_label }}">{{ form.categoria.label }}</label>
+                    {{ form.categoria }}
+                    <div class="error-message" id="categoria-error">
+                        {% if form.categoria.errors %}{{ form.categoria.errors.0 }}{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="{{ form.descripcion.id_for_label }}">{{ form.descripcion.label }}</label>
+                    {{ form.descripcion }}
+                    <span class="counter" id="descripcion-counter">0</span>/500 caracteres
+                    <div class="error-message" id="descripcion-error">
+                        {% if form.descripcion.errors %}{{ form.descripcion.errors.0 }}{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="form-section">
+                <h3>Imágenes del Producto</h3>
+                <div class="form-group">
+                    <label for="{{ form.imagen1.id_for_label }}">{{ form.imagen1.label }}</label>
+                    <div class="input-group">
+                        {{ form.imagen1 }}
+                        <button type="button" class="preview-btn" onclick="previewImage('imagen1')">Vista Previa</button>
+                    </div>
+                    <div class="preview-container" id="preview-imagen1"></div>
+                    <div class="error-message" id="imagen1-error">
+                        {% if form.imagen1.errors %}{{ form.imagen1.errors.0 }}{% endif %}
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="{{ form.imagen2.id_for_label }}">{{ form.imagen2.label }}</label>
-                    <div class="image-input-group">
+                    <div class="input-group">
                         {{ form.imagen2 }}
-                        <button type="button" class="btn-preview" onclick="previewImage('imagen2')">Vista Previa</button>
+                        <button type="button" class="preview-btn" onclick="previewImage('imagen2')">Vista Previa</button>
                     </div>
-                    <div class="image-preview" id="preview-imagen2"></div>
-                    <div class="error-message" id="imagen2-error"></div>
-                    {% if form.imagen2.errors %}
-                        <div class="error-message">{{ form.imagen2.errors.0 }}</div>
-                    {% endif %}
+                    <div class="preview-container" id="preview-imagen2"></div>
+                    <div class="error-message" id="imagen2-error">
+                        {% if form.imagen2.errors %}{{ form.imagen2.errors.0 }}{% endif %}
+                    </div>
                 </div>
-                
                 <div class="form-group">
                     <label for="{{ form.imagen3.id_for_label }}">{{ form.imagen3.label }}</label>
-                    <div class="image-input-group">
+                    <div class="input-group">
                         {{ form.imagen3 }}
-                        <button type="button" class="btn-preview" onclick="previewImage('imagen3')">Vista Previa</button>
+                        <button type="button" class="preview-btn" onclick="previewImage('imagen3')">Vista Previa</button>
                     </div>
-                    <div class="image-preview" id="preview-imagen3"></div>
-                    <div class="error-message" id="imagen3-error"></div>
-                    {% if form.imagen3.errors %}
-                        <div class="error-message">{{ form.imagen3.errors.0 }}</div>
-                    {% endif %}
+                    <div class="preview-container" id="preview-imagen3"></div>
+                    <div class="error-message" id="imagen3-error">
+                        {% if form.imagen3.errors %}{{ form.imagen3.errors.0 }}{% endif %}
+                    </div>
                 </div>
             </div>
-            
             <div class="form-actions">
-                <button type="submit" id="submitBtn" class="btn-submit" disabled>
+                <button type="submit" id="submitBtn" class="btn btn-primary">
                     <span class="btn-text">Agregar Producto</span>
-                    <span class="btn-loading" style="display: none;">
-                        <i class="loading-spinner"></i> Procesando...
-                    </span>
+                    <span class="btn-loading" style="display: none;">Procesando...</span>
                 </button>
                 <a href="{% url 'fake_store_api:inicio' %}" class="btn btn-secondary">Cancelar</a>
             </div>
         </form>
     </div>
-
-    
 {% endblock %}
-{% block extra_scripts %}
-    {% endblock %}
