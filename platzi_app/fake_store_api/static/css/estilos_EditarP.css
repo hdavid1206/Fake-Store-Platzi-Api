@@ -1,0 +1,324 @@
+/* Estilos específicos para editar productos */
+
+/* Información del producto a editar */
+.edit-info {
+    background: linear-gradient(135deg, var(--orange-lighter), rgba(255, 107, 53, 0.1));
+    border: 2px solid var(--orange-primary);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.edit-info::before {
+    content: '✏️';
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    opacity: 0.7;
+}
+
+.edit-info p {
+    margin: 0.5rem 0;
+    font-weight: 600;
+    color: var(--orange-dark);
+}
+
+.edit-info strong {
+    color: var(--gray-dark);
+}
+
+/* Vista previa de imagen actual */
+.current-image-preview {
+    background: var(--white);
+    border: 1px solid var(--orange-lighter);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-top: 1rem;
+    text-align: center !important;
+}
+
+.current-image-preview h4 {
+    color: var(--orange-primary);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.current-image-preview img {
+    cursor: pointer;
+    transition: var(--transition);
+    border: 2px solid var(--orange-lighter);
+    box-shadow: var(--shadow-light);
+}
+
+.current-image-preview img:hover {
+    transform: scale(1.05);
+    border-color: var(--orange-primary);
+    box-shadow: var(--shadow-medium);
+}
+
+/* Campos prellenados */
+.field-updated {
+    background: rgba(255, 107, 53, 0.05) !important;
+    border-left: 4px solid var(--orange-primary) !important;
+}
+
+/* Notificaciones específicas para edición */
+.notifications {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+}
+
+.notification {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 1rem 1.5rem;
+    margin-bottom: 0.5rem;
+    box-shadow: var(--shadow-strong);
+    border-left: 4px solid;
+    animation: slideInNotification 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.notification-success {
+    border-left-color: #10b981;
+    background: linear-gradient(135deg, #f0fdf4, #ffffff);
+    color: #065f46;
+}
+
+.notification-error {
+    border-left-color: #ef4444;
+    background: linear-gradient(135deg, #fef2f2, #ffffff);
+    color: #991b1b;
+}
+
+.notification-info {
+    border-left-color: #3b82f6;
+    background: linear-gradient(135deg, #eff6ff, #ffffff);
+    color: #1e40af;
+}
+
+.notification-warning {
+    border-left-color: #f59e0b;
+    background: linear-gradient(135deg, #fffbeb, #ffffff);
+    color: #92400e;
+}
+
+.close-notification {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 1rem;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.close-notification:hover {
+    opacity: 1;
+}
+
+@keyframes slideInNotification {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Barra de progreso específica para edición */
+.progress-bar {
+    height: 4px;
+    background: var(--orange-lighter);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 1rem auto 2rem;
+    max-width: 600px;
+    position: relative;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange-primary), var(--orange-light));
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    text-align: center !important;
+    font-size: 0.9rem;
+    color: var(--gray-medium);
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+/* Formulario de edición específico */
+form {
+    position: relative;
+}
+
+form::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: linear-gradient(45deg, 
+        transparent 0%, 
+        rgba(255, 107, 53, 0.1) 50%, 
+        transparent 100%);
+    border-radius: calc(var(--border-radius) + 10px);
+    z-index: -1;
+    opacity: 0.5;
+}
+
+/* Contadores de caracteres mejorados */
+.counter.warning {
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+.counter.error {
+    color: #ef4444;
+    font-weight: 700;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* Botones de acción específicos para edición */
+.form-actions {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--orange-lighter);
+    position: relative;
+}
+
+.form-actions::before {
+    content: 'Cambios del producto';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--white);
+    padding: 0 1rem;
+    font-size: 0.85rem;
+    color: var(--orange-primary);
+    font-weight: 600;
+}
+
+.form-actions button[type="submit"] {
+    background: linear-gradient(135deg, var(--orange-primary), var(--orange-dark));
+    position: relative;
+    overflow: hidden;
+}
+
+.form-actions button[type="submit"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+    transition: left 0.6s;
+}
+
+.form-actions button[type="submit"]:hover::before {
+    left: 100%;
+}
+
+/* Responsive específico para edición */
+@media (max-width: 768px) {
+    .edit-info {
+        padding: 1rem;
+    }
+    
+    .edit-info::before {
+        display: none;
+    }
+    
+    .notifications {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .notification {
+        font-size: 0.9rem;
+        padding: 0.75rem 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .current-image-preview img {
+        max-width: 150px;
+        max-height: 150px;
+    }
+    
+    .form-actions::before {
+        font-size: 0.75rem;
+    }
+}
+
+/* Estados especiales */
+.form-group.has-changes {
+    position: relative;
+}
+
+.form-group.has-changes::after {
+    content: '●';
+    position: absolute;
+    top: 0;
+    right: 10px;
+    color: var(--orange-primary);
+    font-size: 0.8rem;
+    animation: blink 2s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
+}
+
+/* Loading específico para edición */
+.btn-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-left: 0.5rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

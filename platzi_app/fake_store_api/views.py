@@ -95,7 +95,12 @@ def agregar_producto_api(request):
                     return redirect('fake_store_api:obtener_productos')
 
                 elif response.status_code == 400:
-                    messages.error(request, 'Error al agregar el producto: Datos inválidos.')
+                    # Mostrar detalles del error de la API
+                    try:
+                        error_detail = response.json()
+                        messages.error(request, f'Error en los datos enviados: {error_detail}')
+                    except:
+                        messages.error(request, 'Error al agregar el producto: Datos inválidos.')
                 else:
                     messages.error(request, f'Error al agregar el producto. Código de estado: {response.status_code}')
 
@@ -118,16 +123,11 @@ def agregar_producto_api(request):
                 messages.error(request, f'Error inesperado: {str(e)}')
         else:
             # Si el formulario no es válido, mostrar errores específicos
-            error_messages = []
+            messages.error(request, "Corrige los siguientes errores:")
             for field, errors in form.errors.items():
                 field_label = form.fields[field].label or field
                 for error in errors:
-                    error_messages.append(f"• {field_label}: {error}")
-            
-            if error_messages:
-                messages.error(request, "Corrige los siguientes errores:")
-                for msg in error_messages:
-                    messages.error(request, msg)
+                    messages.error(request, f"• {field_label}: {error}")
     
     # En caso de error o método incorrecto, se mantiene en la misma página con el formulario y los mensajes de error
     return render(request, 'agregar_producto.html', {'form': form})
@@ -195,14 +195,18 @@ def editar_producto(request):
     return render(request, 'editar_producto.html', contexto)
 
 def editar_producto_api(request):
-    """API para actualizar productos"""
+    """API para actualizar productos con validación mejorada"""
     if request.method == 'POST':
         form = AgregarProductoForm(request.POST)
         producto_id = request.POST.get('id') or request.POST.get('product_id')
         
         if not producto_id:
             messages.error(request, 'ID del producto requerido para editar.')
-            return render(request, 'editar_producto.html', {'form': form})
+            contexto = {
+                'form': form,
+                'es_edicion': False
+            }
+            return render(request, 'editar_producto.html', contexto)
 
         if form.is_valid():
             try:
@@ -215,8 +219,30 @@ def editar_producto_api(request):
                 # Obtener lista de imágenes
                 imagenes = form.get_images_list()
 
-                # Preparar datos para la API
+                # Verificar que la categoría existe antes de enviar
                 url = "https://api.escuelajs.co/api/v1"
+                
+                # Validar categoría
+                try:
+                    cat_response = requests.get(f"{url}/categories/{categoria_id}", timeout=10)
+                    if cat_response.status_code != 200:
+                        messages.error(request, f'La categoría con ID {categoria_id} no existe en el servidor.')
+                        contexto = {
+                            'form': form,
+                            'producto_id': producto_id,
+                            'es_edicion': True
+                        }
+                        return render(request, 'editar_producto.html', contexto)
+                except requests.RequestException:
+                    messages.error(request, 'Error al validar la categoría. Intenta más tarde.')
+                    contexto = {
+                        'form': form,
+                        'producto_id': producto_id,
+                        'es_edicion': True
+                    }
+                    return render(request, 'editar_producto.html', contexto)
+
+                # Preparar datos para la API
                 datos = {
                     "title": titulo,
                     "price": precio,
@@ -227,6 +253,14 @@ def editar_producto_api(request):
 
                 # Hacer petición PUT
                 response = requests.put(f"{url}/products/{producto_id}", json=datos, timeout=20)
+                
+                # Debug: mostrar la respuesta para entender el error
+                if response.status_code != 200:
+                    try:
+                        error_detail = response.json()
+                        messages.error(request, f'Error del servidor: {error_detail}')
+                    except:
+                        messages.error(request, f'Error del servidor (código {response.status_code}): {response.text[:200]}')
 
                 if response.status_code == 200:
                     resultado = response.json()
@@ -234,9 +268,9 @@ def editar_producto_api(request):
                     return redirect('fake_store_api:obtener_productos')
 
                 elif response.status_code == 404:
-                    messages.error(request, 'Producto no encontrado.')
+                    messages.error(request, 'Producto no encontrado en el servidor.')
                 elif response.status_code == 400:
-                    messages.error(request, 'Error al actualizar el producto: Datos inválidos.')
+                    messages.error(request, 'Error al actualizar el producto: Los datos enviados no son válidos.')
                 else:
                     messages.error(request, f'Error al actualizar el producto. Código de estado: {response.status_code}')
 
@@ -259,16 +293,11 @@ def editar_producto_api(request):
                 messages.error(request, f'Error inesperado: {str(e)}')
         else:
             # Si el formulario no es válido, mostrar errores específicos
-            error_messages = []
+            messages.error(request, "Hay errores en el formulario:")
             for field, errors in form.errors.items():
                 field_label = form.fields[field].label or field
                 for error in errors:
-                    error_messages.append(f"• {field_label}: {error}")
-            
-            if error_messages:
-                messages.error(request, "Corrige los siguientes errores:")
-                for msg in error_messages:
-                    messages.error(request, msg)
+                    messages.error(request, f"• {field_label}: {error}")
     
     # En caso de error o método incorrecto, se mantiene en la página de edición
     contexto = {
@@ -278,13 +307,14 @@ def editar_producto_api(request):
     }
     return render(request, 'editar_producto.html', contexto)
 
-def eliminar_producto(request):
+def eliminar_producto(request, producto_id=None):
     """API mejorada para eliminar productos"""
     if request.method != 'POST':
         return JsonResponse({'error': 'Solo se permiten solicitudes POST'}, status=405)
 
     # Obtener ID del producto desde diferentes fuentes
-    producto_id = request.POST.get('id')
+    if not producto_id:
+        producto_id = request.POST.get('id')
     
     # Si no está en POST form data, verificar en JSON body
     if not producto_id:
