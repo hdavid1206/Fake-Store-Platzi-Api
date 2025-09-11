@@ -88,9 +88,7 @@
                     <div class="card-header">
                         <div class="product-id">#{{ producto.id }}</div>
                         <div class="card-actions">
-                            <button class="action-btn" data-action="view" data-id="{{ producto.id }}" title="Ver detalles">
-                                <i class="fas fa-eye"></i>
-                            </button>
+
                             <button class="action-btn" data-action="edit" data-id="{{ producto.id }}" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </button>
@@ -113,11 +111,6 @@
                             </div>
                         {% endif %}
                         
-                        <div class="image-overlay">
-                            <button class="overlay-btn" onclick="openImageModal('{{ producto.images.0|default:'/static/images/no-image.png' }}', '{{ producto.title }}')">
-                                <i class="fas fa-search-plus"></i>
-                            </button>
-                        </div>
                     </div>
 
                     <div class="card-content">
