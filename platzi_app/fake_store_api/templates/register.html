@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Harold Tienda</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/estilos_bases.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilos_auth.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-wrapper">
+            <h1 class="auth-title">Crear Cuenta</h1>
+            <p class="auth-subtitle">Únete a Harold Tienda y descubre productos increíbles</p>
+            
+            <div class="auth-form">
+                <!-- Mensajes de error/éxito -->
+                {% if messages %}
+                    <div class="auth-messages">
+                        {% for message in messages %}
+                            <div class="auth-alert auth-alert-{{ message.tags|default:'info' }}">
+                                {{ message }}
+                                <button class="auth-close-alert" onclick="this.parentElement.remove()">&times;</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <form method="post" id="registerForm" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Nombre y Apellido -->
+                    <div class="auth-name-group">
+                        <div class="auth-field-group">
+                            <label for="{{ form.first_name.id_for_label }}">Nombre</label>
+                            <div class="auth-field-with-icon">
+                                <i class="fas fa-user auth-field-icon"></i>
+                                {{ form.first_name }}
+                            </div>
+                            {% if form.first_name.errors %}
+                                <span class="auth-error-message">{{ form.first_name.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="auth-field-group">
+                            <label for="{{ form.last_name.id_for_label }}">Apellido</label>
+                            <div class="auth-field-with-icon">
+                                <i class="fas fa-user auth-field-icon"></i>
+                                {{ form.last_name }}
+                            </div>
+                            {% if form.last_name.errors %}
+                                <span class="auth-error-message">{{ form.last_name.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="auth-field-group">
+                        <label for="{{ form.email.id_for_label }}">Correo Electrónico</label>
+                        <div class="auth-field-with-icon">
+                            <i class="fas fa-envelope auth-field-icon"></i>
+                            {{ form.email }}
+                        </div>
+                        {% if form.email.errors %}
+                            <span class="auth-error-message">{{ form.email.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Usuario -->
+                    <div class="auth-field-group">
+                        <label for="{{ form.username.id_for_label }}">Nombre de Usuario</label>
+                        <div class="auth-field-with-icon">
+                            <i class="fas fa-at auth-field-icon"></i>
+                            {{ form.username }}
+                        </div>
+                        <div id="usernameCheck" class="auth-error-message" style="display: none;"></div>
+                        {% if form.username.errors %}
+                            <span class="auth-error-message">{{ form.username.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div class="auth-field-group">
+                        <label for="{{ form.password.id_for_label }}">Contraseña</label>
+                        <div class="auth-field-with-icon">
+                            <i class="fas fa-lock auth-field-icon"></i>
+                            {{ form.password }}
+                        </div>
+                        <div class="password-strength" id="passwordStrength" style="display: none;">
+                            <div class="password-strength-bar">
+                                <div class="password-strength-fill" id="passwordStrengthFill"></div>
+                            </div>
+                            <div class="password-strength-text" id="passwordStrengthText"></div>
+                        </div>
+                        {% if form.password.errors %}
+                            <span class="auth-error-message">{{ form.password.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Confirmar Contraseña -->
+                    <div class="auth-field-group">
+                        <label for="{{ form.password2.id_for_label }}">Confirmar Contraseña</label>
+                        <div class="auth-field-with-icon">
+                            <i class="fas fa-lock auth-field-icon"></i>
+                            {{ form.password2 }}
+                        </div>
+                        <div id="passwordMatch" class="auth-error-message" style="display: none;"></div>
+                        {% if form.password2.errors %}
+                            <span class="auth-error-message">{{ form.password2.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Términos y condiciones -->
+                    <div class="auth-checkbox-group">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <label for="terms">
+                            Acepto los <a href="#" target="_blank">Términos y Condiciones</a> y la 
+                            <a href="#" target="_blank">Política de Privacidad</a> de Harold Tienda
+                        </label>
+                    </div>
+
+                    <!-- Botón de registro -->
+                    <button type="submit" class="auth-submit-btn" id="submitBtn">
+                        <span class="auth-btn-text">Crear Cuenta</span>
+                        <span class="auth-btn-loading"></span>
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="auth-divider">
+                    <span>o</span>
+                </div>
+
+                <!-- Toggle a login -->
+                <div class="auth-toggle">
+                    <p>¿Ya tienes una cuenta?</p>
+                    <a href="{% url 'accounts:login' %}">Iniciar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registerForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const usernameField = document.getElementById('{{ form.username.id_for_label }}');
+            const passwordField = document.getElementById('{{ form.password.id_for_label }}');
+            const password2Field = document.getElementById('{{ form.password2.id_for_label }}');
+            const termsCheckbox = document.getElementById('terms');
+
+            // Verificar disponibilidad de username
+            if (usernameField) {
+                let usernameTimeout;
+                usernameField.addEventListener('input', function() {
+                    clearTimeout(usernameTimeout);
+                    const username = this.value.trim();
+                    
+                    if (username.length >= 3) {
+                        usernameTimeout = setTimeout(() => {
+                            checkUsernameAvailability(username);
+                        }, 500);
+                    }
+                });
+            }
+
+            // Validación de fuerza de contraseña
+            if (passwordField) {
+                passwordField.addEventListener('input', function() {
+                    const password = this.value;
+                    updatePasswordStrength(password);
+                    checkPasswordMatch();
+                });
+            }
+
+            // Verificar coincidencia de contraseñas
+            if (password2Field) {
+                password2Field.addEventListener('input', checkPasswordMatch);
+            }
+
+            // Validación del formulario
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!termsCheckbox.checked) {
+                    showAuthMessage('Debes aceptar los términos y condiciones', 'error');
+                    return;
+                }
+
+                // Mostrar loading
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+
+                // Enviar formulario
+                setTimeout(() => {
+                    form.submit();
+                }, 500);
+            });
+
+            // Funciones auxiliares
+            function checkUsernameAvailability(username) {
+                const usernameGroup = usernameField.closest('.auth-field-group');
+                const checkDiv = document.getElementById('usernameCheck');
+                
+                fetch(`/api/check-username/?username=${username}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.available) {
+                            usernameGroup.classList.remove('has-error');
+                            usernameGroup.classList.add('valid');
+                            checkDiv.style.display = 'none';
+                        } else {
+                            usernameGroup.classList.add('has-error');
+                            usernameGroup.classList.remove('valid');
+                            checkDiv.textContent = 'Este nombre de usuario ya está en uso';
+                            checkDiv.style.display = 'block';
+                        }
+                    })
+                    .catch(() => {
+                        usernameGroup.classList.remove('valid', 'has-error');
+                    });
+            }
+
+            function updatePasswordStrength(password) {
+                const strengthDiv = document.getElementById('passwordStrength');
+                const strengthFill = document.getElementById('passwordStrengthFill');
+                const strengthText = document.getElementById('passwordStrengthText');
+                
+                if (password.length === 0) {
+                    strengthDiv.style.display = 'none';
+                    return;
+                }
+
+                strengthDiv.style.display = 'block';
+                
+                let strength = 0;
+                let text = '';
+                
+                if (password.length >= 8) strength += 1;
+                if (/[a-z]/.test(password)) strength += 1;
+                if (/[A-Z]/.test(password)) strength += 1;
+                if (/[0-9]/.test(password)) strength += 1;
+                if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+
+                strengthDiv.className = 'password-strength';
+                
+                if (strength <= 1) {
+                    strengthDiv.classList.add('password-strength-weak');
+                    text = 'Muy débil';
+                } else if (strength <= 2) {
+                    strengthDiv.classList.add('password-strength-fair');
+                    text = 'Débil';
+                } else if (strength <= 3) {
+                    strengthDiv.classList.add('password-strength-good');
+                    text = 'Buena';
+                } else {
+                    strengthDiv.classList.add('password-strength-strong');
+                    text = 'Muy fuerte';
+                }
+                
+                strengthText.textContent = `Seguridad: ${text}`;
+            }
+
+            function checkPasswordMatch() {
+                if (!passwordField || !password2Field) return;
+                
+                const password = passwordField.value;
+                const password2 = password2Field.value;
+                const matchDiv = document.getElementById('passwordMatch');
+                const password2Group = password2Field.closest('.auth-field-group');
+                
+                if (password2.length === 0) {
+                    matchDiv.style.display = 'none';
+                    password2Group.classList.remove('has-error', 'valid');
+                    return;
+                }
+                
+                if (password === password2) {
+                    password2Group.classList.remove('has-error');
+                    password2Group.classList.add('valid');
+                    matchDiv.style.display = 'none';
+                } else {
+                    password2Group.classList.add('has-error');
+                    password2Group.classList.remove('valid');
+                    matchDiv.textContent = 'Las contraseñas no coinciden';
+                    matchDiv.style.display = 'block';
+                }
+            }
+
+            function showAuthMessage(message, type = 'info') {
+                const messagesDiv = document.querySelector('.auth-messages') || createMessagesDiv();
+                
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `auth-alert auth-alert-${type}`;
+                alertDiv.innerHTML = `
+                    ${message}
+                    <button class="auth-close-alert" onclick="this.parentElement.remove()">&times;</button>
+                `;
+                
+                messagesDiv.appendChild(alertDiv);
+                
+                setTimeout(() => {
+                    if (alertDiv.parentElement) {
+                        alertDiv.remove();
+                    }
+                }, 5000);
+            }
+
+            function createMessagesDiv() {
+                const messagesDiv = document.createElement('div');
+                messagesDiv.className = 'auth-messages';
+                form.parentNode.insertBefore(messagesDiv, form);
+                return messagesDiv;
+            }
+
+            // Auto-cerrar mensajes después de 10 segundos
+            const alerts = document.querySelectorAll('.auth-alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    if (alert.parentElement) {
+                        alert.style.opacity = '0';
+                        alert.style.transform = 'translateY(-10px)';
+                        setTimeout(() => alert.remove(), 300);
+                    }
+                }, 10000);
+            });
+        });
+    </script>
+</body>
+</html>

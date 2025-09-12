@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Harold Tienda</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/estilos_bases.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilos_auth.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-wrapper">
+            <h1 class="auth-title">Iniciar Sesión</h1>
+            <p class="auth-subtitle">Bienvenido de nuevo a Harold Tienda</p>
+            
+            <div class="auth-form">
+                <!-- Mensajes de error/éxito -->
+                {% if messages %}
+                    <div class="auth-messages">
+                        {% for message in messages %}
+                            <div class="auth-alert auth-alert-{{ message.tags|default:'info' }}">
+                                {{ message }}
+                                <button class="auth-close-alert" onclick="this.parentElement.remove()">&times;</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <form method="post" id="loginForm" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Usuario -->
+                    <div class="auth-field-group">
+                        <label for="{{ form.username.id_for_label }}">Usuario</label>
+                        <div class="auth-field-with-icon">
+                            <i class="fas fa-user auth-field-icon"></i>
+                            {{ form.username }}
+                        </div>
+                        {% if form.username.errors %}
+                            <span class="auth-error-message">{{ form.username.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div class="auth-field-group">
+                        <label for="{{ form.password.id_for_label }}">Contraseña</label>
+                        <div class="auth-field-with-icon">
+                            <i class="fas fa-lock auth-field-icon"></i>
+                            {{ form.password }}
+                            <button type="button" class="password-toggle" id="passwordToggle">
+                                <i class="fas fa-eye" id="passwordToggleIcon"></i>
+                            </button>
+                        </div>
+                        {% if form.password.errors %}
+                            <span class="auth-error-message">{{ form.password.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Recordar y Olvidé contraseña -->
+                    <div class="auth-checkbox-group">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Recordar mi sesión</label>
+                    </div>
+
+                    <div class="auth-links">
+                        <a href="#" id="forgotPassword">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <!-- Botón de login -->
+                    <button type="submit" class="auth-submit-btn" id="submitBtn">
+                        <span class="auth-btn-text">Iniciar Sesión</span>
+                        <span class="auth-btn-loading"></span>
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="auth-divider">
+                    <span>o</span>
+                </div>
+
+                <!-- Toggle a registro -->
+                <div class="auth-toggle">
+                    <p>¿No tienes una cuenta?</p>
+                    <a href="{% url 'accounts:register' %}">Crear Cuenta</a>
+                </div>
+
+                <!-- Link para volver al inicio -->
+                <div class="auth-links" style="margin-top: 1rem;">
+                    <a href="{% url 'fake_store_api:inicio' %}">
+                        <i class="fas fa-arrow-left"></i> Volver al Inicio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const passwordField = document.getElementById('{{ form.password.id_for_label }}');
+            const passwordToggle = document.getElementById('passwordToggle');
+            const passwordToggleIcon = document.getElementById('passwordToggleIcon');
+            const forgotPasswordLink = document.getElementById('forgotPassword');
+
+            // Toggle mostrar/ocultar contraseña
+            if (passwordToggle && passwordField) {
+                passwordToggle.addEventListener('click', function() {
+                    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordField.setAttribute('type', type);
+                    
+                    if (type === 'text') {
+                        passwordToggleIcon.classList.remove('fa-eye');
+                        passwordToggleIcon.classList.add('fa-eye-slash');
+                    } else {
+                        passwordToggleIcon.classList.remove('fa-eye-slash');
+                        passwordToggleIcon.classList.add('fa-eye');
+                    }
+                });
+            }
+
+            // Manejar olvido de contraseña
+            if (forgotPasswordLink) {
+                forgotPasswordLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showAuthMessage('Funcionalidad en desarrollo. Contacta al administrador.', 'info');
+                });
+            }
+
+            // Validación del formulario
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('{{ form.username.id_for_label }}').value.trim();
+                const password = document.getElementById('{{ form.password.id_for_label }}').value;
+                
+                if (!username) {
+                    showAuthMessage('Por favor ingresa tu nombre de usuario', 'error');
+                    return;
+                }
+                
+                if (!password) {
+                    showAuthMessage('Por favor ingresa tu contraseña', 'error');
+                    return;
+                }
+
+                // Mostrar loading
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+
+                // Enviar formulario
+                setTimeout(() => {
+                    form.submit();
+                }, 500);
+            });
+
+            // Función auxiliar para mostrar mensajes
+            function showAuthMessage(message, type = 'info') {
+                const messagesDiv = document.querySelector('.auth-messages') || createMessagesDiv();
+                
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `auth-alert auth-alert-${type}`;
+                alertDiv.innerHTML = `
+                    ${message}
+                    <button class="auth-close-alert" onclick="this.parentElement.remove()">&times;</button>
+                `;
+                
+                messagesDiv.appendChild(alertDiv);
+                
+                setTimeout(() => {
+                    if (alertDiv.parentElement) {
+                        alertDiv.remove();
+                    }
+                }, 5000);
+            }
+
+            function createMessagesDiv() {
+                const messagesDiv = document.createElement('div');
+                messagesDiv.className = 'auth-messages';
+                form.parentNode.insertBefore(messagesDiv, form);
+                return messagesDiv;
+            }
+
+            // Auto-cerrar mensajes después de 10 segundos
+            const alerts = document.querySelectorAll('.auth-alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    if (alert.parentElement) {
+                        alert.style.opacity = '0';
+                        alert.style.transform = 'translateY(-10px)';
+                        setTimeout(() => alert.remove(), 300);
+                    }
+                }, 10000);
+            });
+
+            // Validación en tiempo real
+            const usernameField = document.getElementById('{{ form.username.id_for_label }}');
+            
+            [usernameField, passwordField].forEach(field => {
+                if (field) {
+                    field.addEventListener('input', function() {
+                        const fieldGroup = this.closest('.auth-field-group');
+                        if (this.value.trim()) {
+                            fieldGroup.classList.remove('has-error');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* Estilos adicionales específicos para login */
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray-medium);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: var(--transition);
+            margin-top: 0.75rem;
+        }
+
+        .password-toggle:hover {
+            color: var(--orange-primary);
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .auth-field-with-icon.password-field input {
+            padding-right: 3rem;
+        }
+
+        /* Ajustar padding para el campo de contraseña con toggle */
+        .auth-field-group:has(.password-toggle) input {
+            padding-right: 3rem !important;
+        }
+    </style>

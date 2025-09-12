@@ -1,201 +1,183 @@
-from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
-from django.contrib.auth import login, logout
-from django.contrib.auth.models import User
-from .serializers import (
-    UserRegistrationSerializer,
-    UserLoginSerializer,
-    UserSerializer
-)
+# Agregar estas importaciones al inicio del archivo accounts/views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, logout, authenticate
+from django.contrib import messages
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+from django.contrib.auth.views import LoginView
+from .forms import CustomUserRegistrationForm, CustomAuthenticationForm
 
+# Agregar estas vistas al final del archivo accounts/views.py
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def register_api(request):
+class CustomRegisterView(CreateView):
     """
-    Vista API para el registro de nuevos usuarios.
-    
-    Endpoint: POST /api/register/
-    
-    Parámetros esperados:
-    - username: nombre de usuario único
-    - email: correo electrónico válido
-    - password: contraseña (mínimo 8 caracteres)
-    - password2: confirmación de contraseña
-    - first_name: nombre (opcional)
-    - last_name: apellido (opcional)
-    
-    Respuestas:
-    - 201: Usuario creado exitosamente
-    - 400: Error en validación de datos
+    Vista basada en clase para el registro de usuarios
     """
-    if request.method == 'POST':
-        # Creamos el serializer con los datos recibidos
-        serializer = UserRegistrationSerializer(data=request.data)
+    form_class = CustomUserRegistrationForm
+    template_name = 'accounts/register.html'
+    success_url = reverse_lazy('accounts:login')
+
+    def form_valid(self, form):
+        """
+        Procesar formulario válido
+        """
+        response = super().form_valid(form)
+        user = form.save()
         
-        if serializer.is_valid():
-            # Guardamos el nuevo usuario
-            user = serializer.save()
-            
-            # Creamos o obtenemos el token de autenticación para el usuario
-            token, created = Token.objects.get_or_create(user=user)
-            
-            # Preparamos la respuesta con los datos del usuario y su token
-            response_data = {
-                'success': True,
-                'message': 'Usuario registrado satisfactoriamente',
-                'user': UserSerializer(user).data,
-                'token': token.key
-            }
-            
-            return Response(response_data, status=status.HTTP_201_CREATED)
-        
-        # Si hay errores de validación, los devolvemos
-        return Response({
-            'success': False,
-            'message': 'Error en el registro',
-            'errors': serializer.errors
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def login_api(request):
-    """
-    Vista API para el inicio de sesión de usuarios.
-    
-    Endpoint: POST /api/login/
-    
-    Parámetros esperados:
-    - username: nombre de usuario
-    - password: contraseña
-    
-    Respuestas:
-    - 200: Autenticación exitosa
-    - 400: Error en credenciales
-    """
-    if request.method == 'POST':
-        # Creamos el serializer con los datos de login
-        serializer = UserLoginSerializer(
-            data=request.data,
-            context={'request': request}
+        messages.success(
+            self.request, 
+            f'¡Bienvenido {user.first_name}! Tu cuenta ha sido creada exitosamente. '
+            'Ya puedes iniciar sesión.'
         )
         
-        if serializer.is_valid():
-            # Obtenemos el usuario validado
-            user = serializer.validated_data['user']
-            
-            # Iniciamos sesión en Django (opcional, para mantener sesión)
-            login(request, user)
-            
-            # Creamos o obtenemos el token de autenticación
-            token, created = Token.objects.get_or_create(user=user)
-            
-            # Preparamos la respuesta exitosa
-            response_data = {
-                'success': True,
-                'message': 'Autenticación satisfactoria',
-                'user': UserSerializer(user).data,
-                'token': token.key
-            }
-            
-            return Response(response_data, status=status.HTTP_200_OK)
+        return response
+
+    def form_invalid(self, form):
+        """
+        Procesar formulario inválido
+        """
+        messages.error(
+            self.request,
+            'Hay errores en el formulario. Por favor corrígelos e intenta nuevamente.'
+        )
+        return super().form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        """
+        Agregar contexto adicional
+        """
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Crear Cuenta - Harold Tienda'
+        return context
+
+
+class CustomLoginView(LoginView):
+    """
+    Vista basada en clase para el inicio de sesión
+    """
+    form_class = CustomAuthenticationForm
+    template_name = 'accounts/login.html'
+    redirect_authenticated_user = True
+    
+    def get_success_url(self):
+        """
+        URL de redirección después del login exitoso
+        """
+        next_url = self.request.GET.get('next')
+        if next_url:
+            return next_url
+        return reverse_lazy('fake_store_api:inicio')
+
+    def form_valid(self, form):
+        """
+        Procesar login exitoso
+        """
+        response = super().form_valid(form)
+        user = form.get_user()
         
-        # Si hay errores de autenticación
-        return Response({
-            'success': False,
-            'message': 'Error en la autenticación',
-            'errors': serializer.errors
-        }, status=status.HTTP_400_BAD_REQUEST)
+        messages.success(
+            self.request,
+            f'¡Bienvenido de nuevo, {user.first_name or user.username}!'
+        )
+        
+        return response
+
+    def form_invalid(self, form):
+        """
+        Procesar login fallido
+        """
+        messages.error(
+            self.request,
+            'Credenciales incorrectas. Por favor verifica tu usuario y contraseña.'
+        )
+        return super().form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        """
+        Agregar contexto adicional
+        """
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Iniciar Sesión - Harold Tienda'
+        return context
 
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def logout_api(request):
+def register_view(request):
     """
-    Vista API para cerrar sesión.
-    
-    Endpoint: POST /api/logout/
-    Requiere: Token de autenticación en headers
-    
-    Respuestas:
-    - 200: Sesión cerrada exitosamente
-    - 401: No autorizado (sin token válido)
+    Vista basada en función para el registro (alternativa)
     """
+    if request.user.is_authenticated:
+        return redirect('fake_store_api:inicio')
+    
     if request.method == 'POST':
-        try:
-            # Eliminamos el token del usuario
-            request.user.auth_token.delete()
+        form = CustomUserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            messages.success(
+                request, 
+                f'¡Bienvenido {user.first_name}! Tu cuenta ha sido creada exitosamente. '
+                'Ya puedes iniciar sesión.'
+            )
+            return redirect('accounts:login')
+        else:
+            messages.error(
+                request,
+                'Hay errores en el formulario. Por favor corrígelos e intenta nuevamente.'
+            )
+    else:
+        form = CustomUserRegistrationForm()
+
+    context = {
+        'form': form,
+        'title': 'Crear Cuenta - Harold Tienda'
+    }
+    return render(request, 'accounts/register.html', context)
+
+
+def login_view(request):
+    """
+    Vista basada en función para el login (alternativa)
+    """
+    if request.user.is_authenticated:
+        return redirect('fake_store_api:inicio')
+    
+    if request.method == 'POST':
+        form = CustomAuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
             
-            # Cerramos la sesión de Django
-            logout(request)
-            
-            return Response({
-                'success': True,
-                'message': 'Sesión cerrada exitosamente'
-            }, status=status.HTTP_200_OK)
-            
-        except Exception as e:
-            return Response({
-                'success': False,
-                'message': 'Error al cerrar sesión',
-                'error': str(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(
+                    request,
+                    f'¡Bienvenido de nuevo, {user.first_name or user.username}!'
+                )
+                
+                next_url = request.GET.get('next', 'fake_store_api:inicio')
+                return redirect(next_url)
+        else:
+            messages.error(
+                request,
+                'Credenciales incorrectas. Por favor verifica tu usuario y contraseña.'
+            )
+    else:
+        form = CustomAuthenticationForm()
+
+    context = {
+        'form': form,
+        'title': 'Iniciar Sesión - Harold Tienda'
+    }
+    return render(request, 'accounts/login.html', context)
 
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def user_profile_api(request):
+def logout_view(request):
     """
-    Vista API para obtener el perfil del usuario actual.
-    
-    Endpoint: GET /api/profile/
-    Requiere: Token de autenticación en headers
-    
-    Respuestas:
-    - 200: Datos del usuario
-    - 401: No autorizado (sin token válido)
+    Vista para cerrar sesión
     """
-    if request.method == 'GET':
-        # Devolvemos los datos del usuario autenticado
-        serializer = UserSerializer(request.user)
-        
-        return Response({
-            'success': True,
-            'user': serializer.data
-        }, status=status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def check_username_api(request):
-    """
-    Vista API para verificar disponibilidad de nombre de usuario.
+    if request.user.is_authenticated:
+        user_name = request.user.first_name or request.user.username
+        logout(request)
+        messages.success(request, f'¡Hasta luego, {user_name}! Has cerrado sesión exitosamente.')
     
-    Endpoint: GET /api/check-username/?username=nombreusuario
-    
-    Parámetros de query:
-    - username: nombre de usuario a verificar
-    
-    Respuestas:
-    - 200: Información sobre disponibilidad
-    """
-    username = request.GET.get('username', '')
-    
-    if not username:
-        return Response({
-            'success': False,
-            'message': 'Debe proporcionar un nombre de usuario'
-        }, status=status.HTTP_400_BAD_REQUEST)
-    
-    # Verificamos si el username existe
-    exists = User.objects.filter(username=username).exists()
-    
-    return Response({
-        'success': True,
-        'available': not exists,
-        'message': 'Nombre de usuario no disponible' if exists else 'Nombre de usuario disponible'
-    }, status=status.HTTP_200_OK)
+    return redirect('fake_store_api:inicio')
