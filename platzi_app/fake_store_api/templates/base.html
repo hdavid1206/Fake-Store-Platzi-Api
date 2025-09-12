@@ -1,34 +1,68 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %} Inicio {% endblock %}</title>
-        {% load static %}
-        <script src="{% static 'js/acciones.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'css/estilos_bases.css' %}">
-        <link rel="stylesheet" href="{% static 'css/estilos_agregarP.css' %}">
-        <link rel="stylesheet" href="{% static 'css/estilos_obtenerP.css' %}">
-        <link rel="stylesheet" href="{% static 'css/estilos_editarP.css' %}">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    </head>
-    <body>
-        <header>
-            <nav class="navbar">
-                <div class="container-fluid">                
-                    <a  href="{% url 'fake_store_api:inicio' %}">Harold Tienda</a>                    
-                        <a  href="{% url 'fake_store_api:obtener_productos' %}">Productos</a>
-                            <a  href="{% url 'fake_store_api:agregar_producto' %}">Agregar productos</a>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Harold Tienda{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/estilos_bases.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilos_auth.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container-fluid">
+                <a href="{% url 'fake_store_api:inicio' %}">Harold Tienda</a>
+                <a href="{% url 'fake_store_api:obtener_productos' %}">Productos</a>
+                
+                {% if request.user.is_authenticated %}
+                    <!-- SOLO USUARIOS LOGUEADOS VEN ESTOS ENLACES -->
+                    <a href="{% url 'fake_store_api:agregar_producto' %}">Agregar productos</a>
+                    <a href="{% url 'fake_store_api:cart' %}">
+                        Carrito 
+                        {% if request.session.cart %}
+                            ({{ request.session.cart|length }})
+                        {% else %}
+                            (0)
+                        {% endif %}
+                    </a>
+                    <a href="{% url 'accounts:logout' %}">
+                        Cerrar Sesión ({{ request.user.username }})
+                    </a>
+                {% else %}
+                    <!-- USUARIOS NO LOGUEADOS VEN ESTOS ENLACES -->
+                    <a href="{% url 'accounts:login' %}">Iniciar Sesión</a>
+                    <a href="{% url 'accounts:register' %}">Registrarse</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <!-- Mensajes de Django -->
+        {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                        <button class="close-alert" onclick="this.parentElement.remove()">×</button>
                     </div>
-            </nav>
-        </header>
-    <main class="container mt-4">
+                {% endfor %}
+            </div>
+        {% endif %}
+        
         {% block content %}
         {% endblock %}
     </main>
-    <footer class="nn">
-        <p>&copy; 2025 Harold Tienda. Todos los derechos reservados.</p>
-            <p>Desarrollado por <a href="" target="_blank">Harold David Palencia Castro</a></p>
-    </footer>
     
+    <footer>
+        <p>© 2025 Harold Tienda. Todos los derechos reservados.</p>
+        <p>Desarrollado por Harold David Palencia Castro</p>
+    </footer>
+
+    <script src="{% static 'js/acciones.js' %}"></script>
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>

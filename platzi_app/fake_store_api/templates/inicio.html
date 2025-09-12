@@ -1,21 +1,36 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
+
 {% block title %}Inicio - Tienda Harold{% endblock %}
 
 {% block content %}
     <main class="text-center">
         <h1>Bienvenido a la Tienda de Harold</h1>
         <p>Esta aplicación te permite explorar muchos productos variados.</p>
+        
         <section>
             <h2>Consultar Productos</h2>
             <p>Explora nuestro catálogo de productos disponibles</p>
             <div class="icon">📦</div>
             <a href="{% url 'fake_store_api:obtener_productos' %}" class="btn">Consultar Productos</a>
         </section>
+        
+        {% if request.user.is_authenticated %}
         <section>
             <h2>Agregar Productos</h2>
             <p>Añade nuevos productos a nuestro catálogo</p>
             <div class="icon">➕</div>
             <a href="{% url 'fake_store_api:agregar_producto' %}" class="btn">Agregar Productos</a>
         </section>
+        {% else %}
+        <section>
+            <h2>Gestionar Productos</h2>
+            <p>Inicia sesión para agregar y gestionar productos</p>
+            <div class="icon">🔐</div>
+            <a href="{% url 'accounts:login' %}?next={% url 'fake_store_api:agregar_producto' %}" class="btn">
+                Iniciar Sesión para Gestionar
+            </a>
+        </section>
+        {% endif %}
     </main>
 {% endblock %}

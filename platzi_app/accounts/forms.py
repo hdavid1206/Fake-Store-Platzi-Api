@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 import re
 
@@ -86,106 +87,41 @@ class CustomUserRegistrationForm(UserCreationForm):
         if not username:
             raise ValidationError('El nombre de usuario es requerido.')
         
-        # Verificar longitud mínima
         if len(username) < 3:
             raise ValidationError('El nombre de usuario debe tener al menos 3 caracteres.')
         
-        # Verificar caracteres permitidos
-        if not re.match(r'^[\w.@+-]+$', username):
-            raise ValidationError('El nombre de usuario solo puede contener letras, números y @/./+/-/_')
-        
-        # Verificar que no comience o termine con puntos
-        if username.startswith('.') or username.endswith('.'):
-            raise ValidationError('El nombre de usuario no puede comenzar o terminar con un punto.')
-        
-        # Verificar disponibilidad
         if User.objects.filter(username=username).exists():
             raise ValidationError('Este nombre de usuario ya está en uso.')
         
-        return username
+        if not re.match(r'^[a-zA-Z0-9@.+_-]+$', username):
+            raise ValidationError('Nombre de usuario inválido. Solo letras, números y @/./+/-/_ permitidos.')
+        
+        return username.strip()
 
     def clean_email(self):
         """
-        Validación personalizada para el email
+        Validación personalizada para el correo electrónico
         """
         email = self.cleaned_data.get('email')
         
-        if not email:
-            raise ValidationError('El correo electrónico es requerido.')
-        
-        # Verificar que el email no esté ya registrado
         if User.objects.filter(email=email).exists():
-            raise ValidationError('Ya existe una cuenta con este correo electrónico.')
+            raise ValidationError('Este correo electrónico ya está registrado.')
         
-        # Validación adicional del formato de email
-        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        if not re.match(email_pattern, email):
-            raise ValidationError('Por favor ingresa un correo electrónico válido.')
-        
-        return email.lower()  # Convertir a minúsculas
-
-    def clean_first_name(self):
-        """
-        Validación para el nombre
-        """
-        first_name = self.cleaned_data.get('first_name', '').strip()
-        
-        if not first_name:
-            raise ValidationError('El nombre es requerido.')
-        
-        if len(first_name) < 2:
-            raise ValidationError('El nombre debe tener al menos 2 caracteres.')
-        
-        # Solo permitir letras y espacios
-        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$', first_name):
-            raise ValidationError('El nombre solo puede contener letras y espacios.')
-        
-        return first_name.title()  # Capitalizar primera letra
-
-    def clean_last_name(self):
-        """
-        Validación para el apellido
-        """
-        last_name = self.cleaned_data.get('last_name', '').strip()
-        
-        if not last_name:
-            raise ValidationError('El apellido es requerido.')
-        
-        if len(last_name) < 2:
-            raise ValidationError('El apellido debe tener al menos 2 caracteres.')
-        
-        # Solo permitir letras y espacios
-        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$', last_name):
-            raise ValidationError('El apellido solo puede contener letras y espacios.')
-        
-        return last_name.title()  # Capitalizar primera letra
+        return email
 
     def clean_password1(self):
         """
         Validación personalizada para la contraseña
         """
-        password1 = self.cleaned_data.get('password1')
+        password = self.cleaned_data.get('password1')
         
-        if not password1:
-            raise ValidationError('La contraseña es requerida.')
-        
-        # Verificar longitud mínima
-        if len(password1) < 8:
+        if len(password) < 8:
             raise ValidationError('La contraseña debe tener al menos 8 caracteres.')
         
-        # Verificar que no sea solo numérica
-        if password1.isdigit():
-            raise ValidationError('La contraseña no puede ser solo numérica.')
+        if password.isnumeric():
+            raise ValidationError('La contraseña no puede ser completamente numérica.')
         
-        # Verificar que no sea muy común
-        common_passwords = [
-            'password', '12345678', 'qwerty', 'abc123', 
-            'password123', '123456789', 'letmein'
-        ]
-        if password1.lower() in common_passwords:
-            raise ValidationError('Esta contraseña es demasiado común.')
-        
-        return password1
+        return password
 
     def clean(self):
         """
@@ -194,45 +130,11 @@ class CustomUserRegistrationForm(UserCreationForm):
         cleaned_data = super().clean()
         password1 = cleaned_data.get('password1')
         password2 = cleaned_data.get('password2')
-        username = cleaned_data.get('username')
-        email = cleaned_data.get('email')
-
-        # Verificar que las contraseñas coincidan
+        
         if password1 and password2 and password1 != password2:
-            raise ValidationError({
-                'password2': 'Las contraseñas no coinciden.'
-            })
-
-        # Verificar que la contraseña no contenga el username o email
-        if password1 and username:
-            if username.lower() in password1.lower():
-                raise ValidationError({
-                    'password1': 'La contraseña no puede contener el nombre de usuario.'
-                })
-
-        if password1 and email:
-            email_local = email.split('@')[0]
-            if email_local.lower() in password1.lower():
-                raise ValidationError({
-                    'password1': 'La contraseña no puede contener partes de tu correo electrónico.'
-                })
-
+            raise ValidationError('Las contraseñas no coinciden.')
+        
         return cleaned_data
-
-    def save(self, commit=True):
-        """
-        Guardar el usuario con los datos adicionales
-        """
-        user = super().save(commit=False)
-        user.email = self.cleaned_data['email']
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
-        
-        if commit:
-            user.save()
-        
-        return user
-
 
 class CustomAuthenticationForm(AuthenticationForm):
     """
@@ -273,19 +175,20 @@ class CustomAuthenticationForm(AuthenticationForm):
         if not username:
             raise ValidationError('El nombre de usuario es requerido.')
         
-        # Permitir login tanto con username como con email
         return username.strip()
 
     def clean(self):
         """
         Validación personalizada del formulario de login
         """
-        username = self.cleaned_data.get('username')
-        password = self.cleaned_data.get('password')
+        cleaned_data = super().clean()
+        username = cleaned_data.get('username')
+        password = cleaned_data.get('password')
 
         if username is not None and password:
             # Intentar autenticar con username normal primero
-            self.user_cache = self.authenticate(
+            self.user_cache = authenticate(
+                self.request,
                 username=username,
                 password=password,
             )
@@ -294,7 +197,8 @@ class CustomAuthenticationForm(AuthenticationForm):
             if self.user_cache is None and '@' in username:
                 try:
                     user = User.objects.get(email=username)
-                    self.user_cache = self.authenticate(
+                    self.user_cache = authenticate(
+                        self.request,
                         username=user.username,
                         password=password,
                     )
@@ -306,11 +210,4 @@ class CustomAuthenticationForm(AuthenticationForm):
             else:
                 self.confirm_login_allowed(self.user_cache)
 
-        return self.cleaned_data
-
-    def authenticate(self, username=None, password=None):
-        """
-        Método de autenticación personalizado
-        """
-        from django.contrib.auth import authenticate
-        return authenticate(self.request, username=username, password=password)
+        return cleaned_data

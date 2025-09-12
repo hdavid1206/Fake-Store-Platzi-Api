@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Carrito - Harold Tienda{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/estilos_obtenerP.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Tu Carrito de Compras</h1>
+    
+    {% if cart %}
+        <div class="card-container">
+            {% for id, item in cart.items %}
+                <div class="card product-card">
+                    <div class="card-img-container">
+                        {% if item.image %}
+                            <img src="{{ item.image }}" alt="{{ item.title }}" class="card-img">
+                        {% else %}
+                            <div class="no-image">Sin imagen</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-content">
+                        <h3>{{ item.title }}</h3>
+                        <p class="price">Precio: ${{ item.price }}</p>
+                        
+                        <form action="{% url 'fake_store_api:update_cart_quantity' id %}" method="post" class="quantity-form">
+                            {% csrf_token %}
+                            <label for="quantity-{{ id }}">Cantidad:</label>
+                            <div class="input-group">
+                                <input type="number" name="quantity" id="quantity-{{ id }}" 
+                                       value="{{ item.quantity }}" min="1" class="quantity-input">
+                                <button type="submit" class="btn btn-update">Actualizar</button>
+                            </div>
+                        </form>
+                        
+                        <a href="{% url 'fake_store_api:remove_from_cart' id %}" class="btn btn-remove">
+                            <i class="fas fa-trash"></i> Remover
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="cart-summary">
+            <h2>Total: ${{ total }}</h2>
+            
+            {% if request.user.is_authenticated %}
+                <a href="#" class="btn btn-checkout">
+                    <i class="fas fa-shopping-bag"></i> Checkout (Simulado)
+                </a>
+            {% else %}
+                <div class="login-prompt">
+                    <p>Por favor inicia sesión para realizar el checkout.</p>
+                    <a href="{% url 'accounts:login' %}?next={% url 'fake_store_api:cart' %}" class="btn btn-login">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="empty-cart">
+            <div class="empty-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h2>Tu carrito está vacío</h2>
+            <p>¡Agrega algunos productos para comenzar a comprar!</p>
+            <a href="{% url 'fake_store_api:obtener_productos' %}" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Volver a Productos
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mejorar la experiencia de actualización de cantidad
+    const quantityForms = document.querySelectorAll('.quantity-form');
+    quantityForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                }
+            });
+        });
+    });
+
+    // Confirmación para remover productos
+    const removeButtons = document.querySelectorAll('.btn-remove');
+    removeButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            if (!confirm('¿Estás seguro de que quieres remover este producto del carrito?')) {
+                e.preventDefault();
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

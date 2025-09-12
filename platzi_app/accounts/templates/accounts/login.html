@@ -46,7 +46,7 @@
                     <!-- Contraseña -->
                     <div class="auth-field-group">
                         <label for="{{ form.password.id_for_label }}">Contraseña</label>
-                        <div class="auth-field-with-icon">
+                        <div class="auth-field-with-icon password-field">
                             <i class="fas fa-lock auth-field-icon"></i>
                             {{ form.password }}
                             <button type="button" class="password-toggle" id="passwordToggle">
@@ -233,12 +233,13 @@
             background: rgba(255, 107, 53, 0.1);
         }
 
-        .auth-field-with-icon.password-field input {
-            padding-right: 3rem;
+        .auth-field-with-icon.password-field {
+            position: relative;
         }
 
-        /* Ajustar padding para el campo de contraseña con toggle */
-        .auth-field-group:has(.password-toggle) input {
+        .auth-field-with-icon.password-field input {
             padding-right: 3rem !important;
         }
     </style>
+</body>
+</html>

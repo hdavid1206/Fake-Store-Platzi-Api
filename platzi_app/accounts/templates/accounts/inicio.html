@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - Harold Tienda</title>
+    <link rel="stylesheet" href="{% static 'css/estilos_bases.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilos_auth.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container-fluid">
+                <a href="{% url 'fake_store_api:inicio' %}">Harold Tienda</a>
+                <a href="{% url 'fake_store_api:obtener_productos' %}">Productos</a>
+                <a href="{% url 'fake_store_api:agregar_producto' %}">Agregar productos</a>
+                <a href="{% url 'fake_store_api:cart' %}">Carrito ({% if request.session.cart %}{{ request.session.cart|length }}{% else %}0{% endif %})</a>
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'accounts:logout' %}">Logout</a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}">Login</a>
+                    <a href="{% url 'accounts:register' %}">Register</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>Bienvenido a tu cuenta, {{ user_name }}!</h1>
+            <p>Desde aquí puedes gestionar tu perfil, ver tu carrito o explorar la tienda.</p>
+            <div class="auth-actions">
+                <a href="{% url 'fake_store_api:inicio' %}" class="btn btn-primary">Ir a la Tienda</a>
+                <a href="{% url 'accounts:logout' %}" class="btn btn-secondary">Cerrar Sesión</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Harold Tienda. Todos los derechos reservados.</p>
+        <p>Desarrollado por Harold David Palencia Castro</p>
+    </footer>
+
+    <script src="{% static 'js/acciones.js' %}"></script>
+</body>
+</html>
