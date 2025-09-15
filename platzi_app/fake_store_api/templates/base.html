@@ -57,12 +57,18 @@
         {% endblock %}
     </main>
     
-    <footer>
-        <p>© 2025 Harold Tienda. Todos los derechos reservados.</p>
-        <p>Desarrollado por Harold David Palencia Castro</p>
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Harold Tienda. Todos los derechos reservados.</p>
+            <div class="footer-links">
+                <a href="#">Términos y Condiciones</a>
+                <a href="#">Política de Privacidad</a>
+                <a href="#">Contacto</a>
+            </div>
+        </div>
     </footer>
 
-    <script src="{% static 'js/acciones.js' %}"></script>
-    {% block extra_scripts %}{% endblock %}
+    {% block extra_js %}{% endblock %}
 </body>
+</html>
 </html>
