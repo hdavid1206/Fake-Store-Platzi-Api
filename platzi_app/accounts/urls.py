@@ -4,8 +4,15 @@ from . import views
 app_name = 'accounts'
 
 urlpatterns = [
-    path('', views.inicio, name='inicio'),  # Esta línea causa el error
+    # URLs de vistas HTML (existentes)
     path('register/', views.register_view, name='register'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    
+    # ✅ NUEVAS URLs API (las que necesitas)
+    path('api/register/', views.register_api, name='api_register'),
+    path('api/login/', views.login_api, name='api_login'),
+    path('api/logout/', views.logout_api, name='api_logout'),
+    path('api/profile/', views.user_profile_api, name='api_profile'),
+    path('api/check-username/', views.check_username_api, name='api_check_username'),
 ]
