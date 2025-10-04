@@ -12,8 +12,9 @@ djangorestframework
 drf-spectacular==0.26.5
 
 # Para validación adicional y utilidades
-python-decouple==3.8  # Para variables de entorno
-Pillow==10.1.0  # Si necesitas manejo de imágenes
+python-decouple==3.8
+pillow==10.1.0
+psycopg2-binary
 
 # Para instalar las dependencias, ejecutar:
 # pip install -r requirements.txt

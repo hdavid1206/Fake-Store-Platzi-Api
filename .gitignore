@@ -1,0 +1,19 @@
+# Archivos de entorno
+.env
+
+# Base de datos local
+db.sqlite3
+
+# Archivos de Python compilados
+__pycache__/
+*.pyc
+
+# Archivos de staticfiles (se generan en el servidor)
+staticfiles/
+
+# Archivos de media (si los usas)
+media/
+
+# Archivos de IDE
+.vscode/
+.idea/
