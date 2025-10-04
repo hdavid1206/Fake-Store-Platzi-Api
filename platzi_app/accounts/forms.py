@@ -18,7 +18,8 @@ class CustomUserRegistrationForm(UserCreationForm):
             'placeholder': 'Tu nombre',
             'autocomplete': 'given-name'
         }),
-        label='Nombre'
+        label='Nombre',
+        error_messages={'required': 'Este campo es obligatorio.'}
     )
     
     last_name = forms.CharField(
@@ -29,7 +30,8 @@ class CustomUserRegistrationForm(UserCreationForm):
             'placeholder': 'Tu apellido',
             'autocomplete': 'family-name'
         }),
-        label='Apellido'
+        label='Apellido',
+        error_messages={'required': 'Este campo es obligatorio.'}
     )
     
     email = forms.EmailField(
@@ -39,20 +41,14 @@ class CustomUserRegistrationForm(UserCreationForm):
             'placeholder': 'tu@email.com',
             'autocomplete': 'email'
         }),
-        label='Correo Electrónico'
+        label='Correo Electrónico',
+        error_messages={
+            'required': 'Este campo es obligatorio.',
+            'invalid': 'Por favor, introduce una dirección de correo electrónico válida.',
+            'unique': 'Este correo electrónico ya está registrado.',
+        }
     )
     
-    username = forms.CharField(
-        max_length=150,
-        required=True,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Nombre de usuario único',
-            'autocomplete': 'username'
-        }),
-        label='Nombre de Usuario',
-        help_text='Debe tener entre 3 y 150 caracteres. Solo letras, números y @/./+/-/_ permitidos.'
-    )
     
     password1 = forms.CharField(
         widget=forms.PasswordInput(attrs={
@@ -61,9 +57,10 @@ class CustomUserRegistrationForm(UserCreationForm):
             'autocomplete': 'new-password'
         }),
         label='Contraseña',
-        help_text='Debe tener al menos 8 caracteres y no puede ser solo numérica.'
+        help_text='Debe tener al menos 8 caracteres y no puede ser solo numérica.',
+        error_messages={'required': 'Este campo es obligatorio.'}
     )
-    
+
     password2 = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
@@ -71,32 +68,26 @@ class CustomUserRegistrationForm(UserCreationForm):
             'autocomplete': 'new-password'
         }),
         label='Confirmar Contraseña',
-        help_text='Ingresa la misma contraseña para verificación.'
+        help_text='Ingresa la misma contraseña para verificación.',
+        error_messages={'required': 'Este campo es obligatorio.'}
+    )
+
+    username = forms.CharField(
+        max_length=150,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Elige un nombre de usuario',
+            'autocomplete': 'username'
+        }),
+        label='Nombre de usuario',
+        help_text='Requerido. 150 caracteres o menos. Letras, dígitos y @/./+/-/_ solamente.',
+        error_messages={'required': 'Este campo es obligatorio.'}
     )
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
-
-    def clean_username(self):
-        """
-        Validación personalizada para el nombre de usuario
-        """
-        username = self.cleaned_data.get('username')
-        
-        if not username:
-            raise ValidationError('El nombre de usuario es requerido.')
-        
-        if len(username) < 3:
-            raise ValidationError('El nombre de usuario debe tener al menos 3 caracteres.')
-        
-        if User.objects.filter(username=username).exists():
-            raise ValidationError('Este nombre de usuario ya está en uso.')
-        
-        if not re.match(r'^[a-zA-Z0-9@.+_-]+$', username):
-            raise ValidationError('Nombre de usuario inválido. Solo letras, números y @/./+/-/_ permitidos.')
-        
-        return username.strip()
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
 
     def clean_email(self):
         """
@@ -108,20 +99,6 @@ class CustomUserRegistrationForm(UserCreationForm):
             raise ValidationError('Este correo electrónico ya está registrado.')
         
         return email
-
-    def clean_password1(self):
-        """
-        Validación personalizada para la contraseña
-        """
-        password = self.cleaned_data.get('password1')
-        
-        if len(password) < 8:
-            raise ValidationError('La contraseña debe tener al menos 8 caracteres.')
-        
-        if password.isnumeric():
-            raise ValidationError('La contraseña no puede ser completamente numérica.')
-        
-        return password
 
     def clean(self):
         """
@@ -135,6 +112,15 @@ class CustomUserRegistrationForm(UserCreationForm):
             raise ValidationError('Las contraseñas no coinciden.')
         
         return cleaned_data
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+        return user
 
 class CustomAuthenticationForm(AuthenticationForm):
     """

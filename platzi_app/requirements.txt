@@ -1,12 +1,12 @@
 # Instalacion de Dependencias para el proyecto
 
 # Framework principal
-Django
+Django==4.2.5
 
 # Para consumir APIs externas
-requests
+requests==2.31.0
 # Django REST Framework para crear APIs
-djangorestframework
+djangorestframework==3.14.0
 
 # Para documentación automática de la API (opcional pero recomendado)
 drf-spectacular==0.26.5
@@ -14,7 +14,7 @@ drf-spectacular==0.26.5
 # Para validación adicional y utilidades
 python-decouple==3.8
 pillow==10.1.0
-psycopg2-binary
+psycopg2-binary==2.9.7
 
 # Para instalar las dependencias, ejecutar:
 # pip install -r requirements.txt

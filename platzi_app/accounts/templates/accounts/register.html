@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="{% static 'css/estilos_bases.css' %}">
     <link rel="stylesheet" href="{% static 'css/estilos_auth.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .auth-required-indicator {
+            color: #dc3545; /* Rojo para indicar obligatoriedad */
+            font-weight: bold;
+            margin-left: 4px;
+        }
+    </style>
 </head>
 <body>
     <div class="auth-container">
@@ -30,11 +37,11 @@
 
                 <form method="post" id="registerForm" novalidate>
                     {% csrf_token %}
-                    
+
                     <!-- Nombre y Apellido -->
                     <div class="auth-name-group">
                         <div class="auth-field-group">
-                            <label for="{{ form.first_name.id_for_label }}">Nombre</label>
+                            <label for="{{ form.first_name.id_for_label }}">Nombre<span class="auth-required-indicator">*</span></label>
                             <div class="auth-field-with-icon">
                                 <i class="fas fa-user auth-field-icon"></i>
                                 {{ form.first_name }}
@@ -45,7 +52,7 @@
                         </div>
                         
                         <div class="auth-field-group">
-                            <label for="{{ form.last_name.id_for_label }}">Apellido</label>
+                            <label for="{{ form.last_name.id_for_label }}">Apellido<span class="auth-required-indicator">*</span></label>
                             <div class="auth-field-with-icon">
                                 <i class="fas fa-user auth-field-icon"></i>
                                 {{ form.last_name }}
@@ -56,9 +63,21 @@
                         </div>
                     </div>
 
+                    <!-- Username -->
+                    <div class="auth-field-group">
+                        <label for="{{ form.username.id_for_label }}">Nombre de Usuario<span class="auth-required-indicator">*</span></label>
+                        <div class="auth-field-with-icon">
+                            <i class="fas fa-user-circle auth-field-icon"></i>
+                            {{ form.username }}
+                        </div>
+                        {% if form.username.errors %}
+                            <span class="auth-error-message">{{ form.username.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
                     <!-- Email -->
                     <div class="auth-field-group">
-                        <label for="{{ form.email.id_for_label }}">Correo Electrónico</label>
+                        <label for="{{ form.email.id_for_label }}">Correo Electrónico<span class="auth-required-indicator">*</span></label>
                         <div class="auth-field-with-icon">
                             <i class="fas fa-envelope auth-field-icon"></i>
                             {{ form.email }}
@@ -68,25 +87,13 @@
                         {% endif %}
                     </div>
 
-                    <!-- Usuario -->
-                    <div class="auth-field-group">
-                        <label for="{{ form.username.id_for_label }}">Nombre de Usuario</label>
-                        <div class="auth-field-with-icon">
-                            <i class="fas fa-at auth-field-icon"></i>
-                            {{ form.username }}
-                        </div>
-                        <div id="usernameCheck" class="auth-error-message" style="display: none;"></div>
-                        {% if form.username.errors %}
-                            <span class="auth-error-message">{{ form.username.errors.0 }}</span>
-                        {% endif %}
-                    </div>
-
                     <!-- Contraseña -->
                     <div class="auth-field-group">
-                        <label for="{{ form.password.id_for_label }}">Contraseña</label>
+                        <label for="{{ form.password1.id_for_label }}">Contraseña<span class="auth-required-indicator">*</span></label>
                         <div class="auth-field-with-icon">
                             <i class="fas fa-lock auth-field-icon"></i>
-                            {{ form.password }}
+                            {{ form.password1 }}
+                            <i class="fas fa-eye password-toggle-icon" data-target="{{ form.password1.id_for_label }}"></i>
                         </div>
                         <div class="password-strength" id="passwordStrength" style="display: none;">
                             <div class="password-strength-bar">
@@ -94,17 +101,18 @@
                             </div>
                             <div class="password-strength-text" id="passwordStrengthText"></div>
                         </div>
-                        {% if form.password.errors %}
-                            <span class="auth-error-message">{{ form.password.errors.0 }}</span>
+                        {% if form.password1.errors %}
+                            <span class="auth-error-message">{{ form.password1.errors.0 }}</span>
                         {% endif %}
                     </div>
 
                     <!-- Confirmar Contraseña -->
                     <div class="auth-field-group">
-                        <label for="{{ form.password2.id_for_label }}">Confirmar Contraseña</label>
+                        <label for="{{ form.password2.id_for_label }}">Confirmar Contraseña<span class="auth-required-indicator">*</span></label>
                         <div class="auth-field-with-icon">
                             <i class="fas fa-lock auth-field-icon"></i>
                             {{ form.password2 }}
+                            <i class="fas fa-eye password-toggle-icon" data-target="{{ form.password2.id_for_label }}"></i>
                         </div>
                         <div id="passwordMatch" class="auth-error-message" style="display: none;"></div>
                         {% if form.password2.errors %}
@@ -146,25 +154,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('registerForm');
             const submitBtn = document.getElementById('submitBtn');
-            const usernameField = document.getElementById('{{ form.username.id_for_label }}');
-            const passwordField = document.getElementById('{{ form.password.id_for_label }}');
+            const passwordField = document.getElementById('{{ form.password1.id_for_label }}');
             const password2Field = document.getElementById('{{ form.password2.id_for_label }}');
             const termsCheckbox = document.getElementById('terms');
-
-            // Verificar disponibilidad de username
-            if (usernameField) {
-                let usernameTimeout;
-                usernameField.addEventListener('input', function() {
-                    clearTimeout(usernameTimeout);
-                    const username = this.value.trim();
-                    
-                    if (username.length >= 3) {
-                        usernameTimeout = setTimeout(() => {
-                            checkUsernameAvailability(username);
-                        }, 500);
-                    }
-                });
-            }
 
             // Validación de fuerza de contraseña
             if (passwordField) {
@@ -179,6 +171,25 @@
             if (password2Field) {
                 password2Field.addEventListener('input', checkPasswordMatch);
             }
+
+            // Funcionalidad para mostrar/ocultar contraseña
+            const toggleIcons = document.querySelectorAll('.password-toggle-icon');
+            toggleIcons.forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const targetInput = document.getElementById(targetId);
+                    
+                    if (targetInput.type === 'password') {
+                        targetInput.type = 'text';
+                        this.classList.remove('fa-eye');
+                        this.classList.add('fa-eye-slash');
+                    } else {
+                        targetInput.type = 'password';
+                        this.classList.remove('fa-eye-slash');
+                        this.classList.add('fa-eye');
+                    }
+                });
+            });
 
             // Validación del formulario
             form.addEventListener('submit', function(e) {
@@ -200,29 +211,6 @@
             });
 
             // Funciones auxiliares
-            function checkUsernameAvailability(username) {
-                const usernameGroup = usernameField.closest('.auth-field-group');
-                const checkDiv = document.getElementById('usernameCheck');
-                
-                fetch(`/api/check-username/?username=${username}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.available) {
-                            usernameGroup.classList.remove('has-error');
-                            usernameGroup.classList.add('valid');
-                            checkDiv.style.display = 'none';
-                        } else {
-                            usernameGroup.classList.add('has-error');
-                            usernameGroup.classList.remove('valid');
-                            checkDiv.textContent = 'Este nombre de usuario ya está en uso';
-                            checkDiv.style.display = 'block';
-                        }
-                    })
-                    .catch(() => {
-                        usernameGroup.classList.remove('valid', 'has-error');
-                    });
-            }
-
             function updatePasswordStrength(password) {
                 const strengthDiv = document.getElementById('passwordStrength');
                 const strengthFill = document.getElementById('passwordStrengthFill');
@@ -265,18 +253,18 @@
 
             function checkPasswordMatch() {
                 if (!passwordField || !password2Field) return;
-                
+
                 const password = passwordField.value;
                 const password2 = password2Field.value;
                 const matchDiv = document.getElementById('passwordMatch');
                 const password2Group = password2Field.closest('.auth-field-group');
-                
+
                 if (password2.length === 0) {
                     matchDiv.style.display = 'none';
                     password2Group.classList.remove('has-error', 'valid');
                     return;
                 }
-                
+
                 if (password === password2) {
                     password2Group.classList.remove('has-error');
                     password2Group.classList.add('valid');

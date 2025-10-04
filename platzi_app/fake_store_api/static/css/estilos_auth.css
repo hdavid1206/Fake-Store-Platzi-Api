@@ -95,6 +95,7 @@
     transition: var(--transition);
     background: var(--white);
     font-family: inherit;
+    position: relative;
 }
 
 .auth-field-group input:focus {
@@ -112,19 +113,43 @@
 /* Iconos en los campos */
 .auth-field-with-icon {
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .auth-field-with-icon input {
     padding-left: 3rem;
+    padding-right: 3rem; /* Espacio solo para el ícono de ojo */
 }
 
 .auth-field-icon {
     position: absolute;
-    left: 1rem;
+    left: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
     color: var(--orange-primary);
     font-size: 1.1rem;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.password-toggle-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-medium);
+    cursor: pointer;
+    transition: color 0.3s ease;
+    z-index: 10;
+    pointer-events: auto;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.password-toggle-icon:hover {
+    color: var(--orange-primary);
 }
 
 /* Mensajes de error */
@@ -453,17 +478,6 @@
 .auth-field-group.valid input {
     border-color: #10b981;
     background: rgba(16, 185, 129, 0.05);
-}
-
-.auth-field-group.valid::after {
-    content: '✓';
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #10b981;
-    font-weight: bold;
-    margin-top: 0.75rem;
 }
 
 /* Efectos hover y focus mejorados */

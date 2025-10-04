@@ -1,24 +1,21 @@
 from pathlib import Path
 import os
-from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config("SECRET_KEY", default="django-insecure-b4crp*egwb!5g24oa^z-z^^5g_!l1!0+qd34+tth!b-@!2i0!l")
+SECRET_KEY = "django-insecure-b4crp*egwb!5g24oa^z-z^^5g_!l1!0+qd34+tth!b-@!2i0!l"
 
-DEBUG = config("DEBUG", default=True, cast=bool)
+DEBUG = True
 
-# En producción, es MÁS SEGURO reemplazar "*" por la URL de tu aplicación en Elastic Beanstalk.
-# Ejemplo: ALLOWED_HOSTS = ["tu-app.us-east-2.elasticbeanstalk.com"]
 ALLOWED_HOSTS = ["*"]
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
+        'NAME': 'postgres',
+        'USER': 'masteruser',
+        'PASSWORD': 'tiendaharold1206',
+        'HOST': 'dbtiendaharold.czq64eeo4efy.us-east-2.rds.amazonaws.com',
         'PORT': '5432',               # Puerto por defecto de PostgreSQL
     }
 }
@@ -38,7 +35,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -90,8 +86,6 @@ USE_I18N = True
 
 USE_TZ = True
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Directorios adicionales para archivos estáticos
 STATICFILES_DIRS = [

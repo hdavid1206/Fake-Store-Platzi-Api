@@ -21,17 +21,17 @@ def register_view(request):
     """
     if request.user.is_authenticated:
         return redirect('fake_store_api:inicio')
-    
+
     if request.method == 'POST':
         form = CustomUserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            login(request, user)
             messages.success(
                 request, 
-                f'¡Bienvenido {user.first_name}! Tu cuenta ha sido creada exitosamente. '
-                'Ya puedes iniciar sesión.'
+                f'¡Bienvenido, {user.first_name or user.username}! Tu cuenta ha sido creada y has iniciado sesión.'
             )
-            return redirect('accounts:login')
+            return redirect('fake_store_api:inicio')
         else:
             messages.error(
                 request,
