@@ -91,12 +91,11 @@ class CustomUserRegistrationForm(UserCreationForm):
 
     def clean_email(self):
         """
-        Validación personalizada para el correo electrónico (optimizada)
+        Validación personalizada para el correo electrónico
         """
         email = self.cleaned_data.get('email')
         
-        # Usar only() para consultar solo el campo necesario
-        if User.objects.filter(email=email).only('id').exists():
+        if User.objects.filter(email=email).exists():
             raise ValidationError('Este correo electrónico ya está registrado.')
         
         return email
@@ -166,27 +165,31 @@ class CustomAuthenticationForm(AuthenticationForm):
 
     def clean(self):
         """
-        Validación personalizada del formulario de login (optimizada)
+        Validación personalizada del formulario de login
         """
         cleaned_data = super().clean()
         username = cleaned_data.get('username')
         password = cleaned_data.get('password')
 
         if username is not None and password:
-            # Si parece un email, buscar el username primero
-            if '@' in username:
-                try:
-                    user = User.objects.only('username').get(email=username)
-                    username = user.username
-                except User.DoesNotExist:
-                    pass
-            
-            # Intentar autenticar una sola vez
+            # Intentar autenticar con username normal primero
             self.user_cache = authenticate(
                 self.request,
                 username=username,
                 password=password,
             )
+            
+            # Si no funciona y parece un email, intentar encontrar el usuario por email
+            if self.user_cache is None and '@' in username:
+                try:
+                    user = User.objects.get(email=username)
+                    self.user_cache = authenticate(
+                        self.request,
+                        username=user.username,
+                        password=password,
+                    )
+                except User.DoesNotExist:
+                    pass
 
             if self.user_cache is None:
                 raise self.get_invalid_login_error()
