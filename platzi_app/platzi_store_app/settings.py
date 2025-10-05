@@ -55,11 +55,14 @@ WSGI_APPLICATION = "platzi_store_app.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'masteruser',
+        'PASSWORD': 'tiendaharold1206',
+        'HOST': 'dbtiendaharold.czq64eeo4efy.us-east-2.rds.amazonaws.com',  # RDS endpoint
+        'PORT': '5432',
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
