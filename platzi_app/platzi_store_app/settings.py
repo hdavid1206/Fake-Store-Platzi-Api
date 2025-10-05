@@ -17,7 +17,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "fake_store_api",
-    "ayuda",
     "accounts",
     'rest_framework',
     'rest_framework.authtoken',
