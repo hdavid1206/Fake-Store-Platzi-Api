@@ -1,12 +1,12 @@
 asgiref==3.8.1
 certifi==2024.8.30
 charset-normalizer==3.3.2
-Django==4.2.16  # Versión LTS estable para producción
-djangorestframework==3.14.0  # Compatible con Django 4.2
+Django==4.2.16
+djangorestframework==3.14.0
 drf-spectacular==0.27.2
 idna==3.7
 pillow==10.4.0
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.10  # Versión actualizada para Python 3.13
 python-decouple==3.8
 requests==2.31.0
 sqlparse==0.4.4
