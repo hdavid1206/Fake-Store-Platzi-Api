@@ -1,25 +1,12 @@
 from pathlib import Path
-import os
-from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-b4crp*egwb!5g24oa^z-z^^5g_!l1!0+qd34+tth!b-@!2i0!l')
+SECRET_KEY = "django-insecure-b4crp*egwb!5g24oa^z-z^^5g_!l1!0+qd34+tth!b-@!2i0!l"  # Hardcodeado como él
 
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = True  # Como él, para que funcione "normal"
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
-
-DATABASES = {
-    'default': {
-        'ENGINE': config('DATABASE_ENGINE', default='django.db.backends.postgresql'),
-        'NAME': config('DATABASE_NAME', default='postgres'),
-        'USER': config('DATABASE_USER', default='masteruser'),
-        'PASSWORD': config('DATABASE_PASSWORD', default='tiendaharold1206'),
-        'HOST': config('DATABASE_HOST', default='dbtiendaharold.czq64eeo4efy.us-east-2.rds.amazonaws.com'),
-        'PORT': config('DATABASE_PORT', default='5432'),
-    }
-}
+ALLOWED_HOSTS = ["*"]  # Más permisivo
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -29,14 +16,14 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "fake_store_api",
-    'accounts',
+    "ayuda",
+    "accounts",
     'rest_framework',
     'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -64,6 +51,18 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "platzi_store_app.wsgi.application"
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'masteruser',
+        'PASSWORD': 'tiendaharold1206',
+        'HOST': 'dbtiendaharold.czq64eeo4efy.us-east-2.rds.amazonaws.com',  # Tu HOST
+        'PORT': '5432'
+    }
+}
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
