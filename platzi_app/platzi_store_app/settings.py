@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-insecure-b4crp*egwb!5g24oa^z-z^^5g_!l1!0+qd34+tth!b-@!2i0!l"  # Hardcodeado como él
 
-DEBUG = True  # Como él, para que funcione "normal"
+DEBUG = False  # Production environment
 
 ALLOWED_HOSTS = ["*"]  # Más permisivo
 
@@ -135,3 +135,5 @@ LOGOUT_REDIRECT_URL = '/'
 SESSION_COOKIE_AGE = 1209600
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
