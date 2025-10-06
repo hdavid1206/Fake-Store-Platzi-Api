@@ -1,13 +1,14 @@
 from pathlib import Path
 import os
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-b4crp*egwb!5g24oa^z-z^^5g_!l1!0+qd34+tth!b-@!2i0!l"  # Hardcodeado como él
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-b4crp*egwb!5g24oa^z-z^^5g_!l1!0+qd34+tth!b-@!2i0!l')
 
-DEBUG = True  # Como él, para que funcione "normal"
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ["*"]  # Más permisivo
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',') if config('ALLOWED_HOSTS', default='*') != '*' else ['*']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -55,12 +56,12 @@ WSGI_APPLICATION = "platzi_store_app.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'masteruser',
-        'PASSWORD': 'tiendaharold1206',
-        'HOST': 'dbtiendaharold.czq64eeo4efy.us-east-2.rds.amazonaws.com',
-        'PORT': '5432'
+        'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
+        'NAME': config('DB_NAME', default=os.path.join(BASE_DIR, 'db.sqlite3')),
+        'USER': config('DB_USER', default=''),
+        'PASSWORD': config('DB_PASSWORD', default=''),
+        'HOST': config('DB_HOST', default=''),
+        'PORT': config('DB_PORT', default='')
     }
 }
 
