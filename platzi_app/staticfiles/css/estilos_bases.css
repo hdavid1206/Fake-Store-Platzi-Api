@@ -1,0 +1,413 @@
+/* Reset y configuración base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --orange-primary: #ff6b35;
+    --orange-light: #ff8c42;
+    --orange-dark: #e55a2b;
+    --orange-lighter: #fff4f0;
+    --white: #ffffff;
+    --gray-light: #f8f9fa;
+    --gray-medium: #6c757d;
+    --gray-dark: #343a40;
+    --shadow-light: 0 2px 10px rgba(255, 107, 53, 0.1);
+    --shadow-medium: 0 4px 20px rgba(255, 107, 53, 0.15);
+    --shadow-strong: 0 8px 30px rgba(255, 107, 53, 0.2);
+    --border-radius: 12px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --primary-color: #ff6b35;
+    --secondary-color: #2c3e50;
+    --light-color: #ecf0f1;
+    --success-color: #27ae60;
+    --danger-color: #e74c3c;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, var(--white) 0%, var(--orange-lighter) 100%);
+    color: var(--gray-dark);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header y navegación */
+header {
+    background: var(--white);
+    box-shadow: var(--shadow-medium);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 3px solid var(--orange-primary);
+}
+
+.navbar {
+    padding: 1rem 0;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.container-fluid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.navbar a {
+    color: var(--gray-dark);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    position: relative;
+    font-size: 1rem;
+}
+
+.navbar a:first-child {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--orange-primary);
+    padding: 0.5rem 0;
+    background: linear-gradient(45deg, var(--orange-primary), var(--orange-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.navbar a:not(:first-child):hover {
+    background: var(--orange-primary);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+/* Main container */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    flex: 1;
+}
+
+.mt-4 {
+    margin-top: 2rem;
+}
+
+/* Página de inicio */
+.text-center {
+    text-align: center !important;
+}
+
+.text-center h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--orange-primary), var(--orange-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-center p {
+    font-size: 1.2rem;
+    color: var(--gray-medium);
+    margin-bottom: 3rem;
+}
+
+section {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 3rem;
+    margin: 2rem auto;
+    box-shadow: var(--shadow-medium);
+    text-align: center !important;
+    transition: var(--transition);
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+section:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-strong);
+}
+
+section h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--orange-primary);
+}
+
+section p {
+    font-size: 1.1rem;
+    color: var(--gray-medium);
+    margin-bottom: 2rem;
+}
+
+.icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.btn {
+    background: var(--orange-primary);
+    color: var(--white);
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-block;
+    max-width: 300px;
+}
+
+.btn:hover {
+    background: var(--orange-dark);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+}
+
+/* FOOTER CORREGIDO - Centrado en la parte inferior */
+.site-footer {
+    background-color: var(--secondary-color);
+    color: white;
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: auto;
+    width: 100%;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-links {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: var(--primary-color);
+}
+
+/* NOTIFICACIÓN DE CIERRE DE SESIÓN MEJORADA */
+.logout-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: var(--success-color);
+    color: white;
+    padding: 15px 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+    animation: slideIn 0.5s ease-out;
+}
+
+.logout-notification i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* HEADER ESTILOS */
+.header {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: var(--box-shadow);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+.logo span {
+    color: var(--primary-color);
+}
+
+/* Animaciones suaves */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+section {
+    animation: fadeIn 0.6s ease-out;
+}
+
+section:nth-child(2) { animation-delay: 0.1s; }
+section:nth-child(3) { animation-delay: 0.2s; }
+section:nth-child(4) { animation-delay: 0.3s; }
+
+/* Mejoras de accesibilidad */
+button:focus, .btn:focus {
+    outline: 3px solid rgba(255, 107, 53, 0.3);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Estados de carga */
+.loading {
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top-color: var(--orange-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container-fluid {
+        flex-direction: column;
+        text-align: center !important;
+        gap: 1rem;
+    }
+    
+    .text-center h1 {
+        font-size: 2.5rem;
+    }
+    
+    .container {
+        padding: 1rem;
+    }
+    
+    section {
+        padding: 2rem;
+        margin: 1.5rem auto;
+        max-width: 90%;
+    }
+    
+    section h2 {
+        font-size: 1.6rem;
+    }
+    
+    .btn {
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+        max-width: 100%;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .text-center h1 {
+        font-size: 2rem;
+    }
+    
+    .navbar a:first-child {
+        font-size: 1.5rem;
+    }
+    
+    section {
+        padding: 1.5rem;
+        max-width: 100%;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.95rem;
+    }
+    
+    .logout-notification {
+        left: 20px;
+        right: 20px;
+        text-align: center;
+    }
+}

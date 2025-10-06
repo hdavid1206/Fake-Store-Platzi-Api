@@ -57,7 +57,7 @@ WSGI_APPLICATION = "platzi_store_app.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
-        'NAME': config('DB_NAME', default=os.path.join(BASE_DIR, 'db.sqlite3')),
+        'NAME': config('DB_NAME', default='db.sqlite3'),
         'USER': config('DB_USER', default=''),
         'PASSWORD': config('DB_PASSWORD', default=''),
         'HOST': config('DB_HOST', default=''),
@@ -100,7 +100,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Configuración de WhiteNoise para archivos estáticos en producción
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-DEFAULT_AUTO_FIELD = "django.models.BigAutoField"
+# Configuración de archivos estáticos adicionales para desarrollo
+if DEBUG:
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'fake_store_api/static'),
+    ]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 PLATZI_API_BASE_URL = 'https://api.escuelajs.co/api/v1/'
 
